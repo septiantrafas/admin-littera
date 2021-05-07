@@ -10,7 +10,10 @@ const Modals = lazy(() => import('../pages/Modals'))
 const Tables = lazy(() => import('../pages/Tables'))
 const Page404 = lazy(() => import('../pages/404'))
 const Blank = lazy(() => import('../pages/Blank'))
-
+const Exam = lazy(() => import('../pages/Exam'))
+const Organizations = lazy(() => import('../pages/Organizations'))
+const QBank = lazy(() => import('../pages/QBank'))
+const Report = lazy(() => import('../pages/Report'))
 /**
  * ⚠ These are internal routes!
  * They will be rendered inside the app, using the default `containers/Layout`.
@@ -25,6 +28,22 @@ const routes = [
   {
     path: '/dashboard', // the url
     component: Dashboard, // view rendered
+  },
+  {
+    path: '/exam', // the url
+    component: Exam, // view rendered
+  },
+  {
+    path: '/organizations', // the url
+    component: Organizations, // view rendered
+  },
+  {
+    path: '/qbank', // the url
+    component: QBank, // view rendered
+  },
+  {
+    path: '/report', // the url
+    component: Report, // view rendered
   },
   {
     path: '/forms',

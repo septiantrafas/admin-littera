@@ -39,7 +39,12 @@ function Forms() {
               <span className="ml-2">Business</span>
             </Label>
             <Label disabled className="ml-6" radio>
-              <Input disabled type="radio" value="disabled" name="accountType" />
+              <Input
+                disabled
+                type="radio"
+                value="disabled"
+                name="accountType"
+              />
               <span className="ml-2">Disabled</span>
             </Label>
           </div>
@@ -68,7 +73,11 @@ function Forms() {
 
         <Label className="mt-4">
           <span>Message</span>
-          <Textarea className="mt-1" rows="3" placeholder="Enter some long form content." />
+          <Textarea
+            className="mt-1"
+            rows="3"
+            placeholder="Enter some long form content."
+          />
         </Label>
 
         <Label className="mt-6" check>
@@ -97,7 +106,9 @@ function Forms() {
         <Label className="mt-4">
           <span>Helper text</span>
           <Input className="mt-1" placeholder="Jane Doe" />
-          <HelperText>Your password must be at least 6 characters long.</HelperText>
+          <HelperText>
+            Your password must be at least 6 characters long.
+          </HelperText>
         </Label>
       </div>
 

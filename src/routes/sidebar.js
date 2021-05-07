@@ -12,62 +12,87 @@ const routes = [
     name: 'Dashboard', // name that appear in Sidebar
   },
   {
-    path: '/app/forms',
-    icon: 'FormsIcon',
-    name: 'Forms',
-  },
-  {
-    path: '/app/cards',
+    path: '/app/exam',
     icon: 'CardsIcon',
-    name: 'Cards',
+    name: 'Exam',
   },
   {
-    path: '/app/charts',
+    path: '/app/organizations',
+    icon: 'PeopleIcon',
+    name: 'Organizations',
+  },
+  {
+    path: '/app/qbank',
     icon: 'ChartsIcon',
-    name: 'Charts',
+    name: 'Question bank',
   },
   {
-    path: '/app/buttons',
-    icon: 'ButtonsIcon',
-    name: 'Buttons',
+    path: '/app/report',
+    icon: 'FormsIcon',
+    name: 'Report',
   },
-  {
-    path: '/app/modals',
-    icon: 'ModalsIcon',
-    name: 'Modals',
-  },
-  {
-    path: '/app/tables',
-    icon: 'TablesIcon',
-    name: 'Tables',
-  },
-  {
-    icon: 'PagesIcon',
-    name: 'Pages',
-    routes: [
-      // submenu
-      {
-        path: '/login',
-        name: 'Login',
-      },
-      {
-        path: '/create-account',
-        name: 'Create account',
-      },
-      {
-        path: '/forgot-password',
-        name: 'Forgot password',
-      },
-      {
-        path: '/app/404',
-        name: '404',
-      },
-      {
-        path: '/app/blank',
-        name: 'Blank',
-      },
-    ],
-  },
+  // {
+  //   path: '/app/dashboard', // the url
+  //   icon: 'HomeIcon', // the component being exported from icons/index.js
+  //   name: 'Dashboard', // name that appear in Sidebar
+  // },
+  // {
+  //   path: '/app/forms',
+  //   icon: 'FormsIcon',
+  //   name: 'Forms',
+  // },
+  // {
+  //   path: '/app/cards',
+  //   icon: 'CardsIcon',
+  //   name: 'Cards',
+  // },
+  // {
+  //   path: '/app/charts',
+  //   icon: 'ChartsIcon',
+  //   name: 'Charts',
+  // },
+  // {
+  //   path: '/app/buttons',
+  //   icon: 'ButtonsIcon',
+  //   name: 'Buttons',
+  // },
+  // {
+  //   path: '/app/modals',
+  //   icon: 'ModalsIcon',
+  //   name: 'Modals',
+  // },
+  // {
+  //   path: '/app/tables',
+  //   icon: 'TablesIcon',
+  //   name: 'Tables',
+  // },
+  // {
+  //   icon: 'PagesIcon',
+  //   name: 'Pages',
+  //   routes: [
+  //     // submenu
+  //     {
+  //       path: '/login',
+  //       name: 'Login',
+  //     },
+  //     {
+  //       path: '/create-account',
+  //       name: 'Create account',
+  //     },
+  //     {
+  //       path: '/forgot-password',
+  //       name: 'Forgot password',
+  //     },
+  //     {
+  //       path: '/app/404',
+  //       name: '404',
+  //     },
+  //     {
+  //       path: '/app/blank',
+  //       name: 'Blank',
+  //     },
+  //   ],
+  // },
 ]
 
 export default routes

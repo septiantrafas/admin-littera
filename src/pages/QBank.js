@@ -24,13 +24,34 @@ import {
   Pagination,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../icons'
-
+import CreatePackages from '../pages/CreatePackages'
 import response from '../utils/demo/tableData'
 import SectionTitle from '../components/Typography/SectionTitle'
-// make a copy of the data, for the second table
 const response2 = response.concat([])
+
 function Qbank() {
-  const [link, setLink] = useState('organizations')
+  const [link, setLink] = useState('packages')
+  const [boxCreatePackage, setBoxCreatePackage] = useState(false)
+  const btnCreatePackage = (
+    <Button
+      size="small"
+      onClick={() => {
+        setBoxCreatePackage(!boxCreatePackage)
+      }}
+    >
+      + create package
+    </Button>
+  )
+  const btnCreateSection = (
+    <Button size="small" tag={Link} to="/app/qbank/create-section">
+      + create section
+    </Button>
+  )
+  const btnCreateQuestion = (
+    <Button size="small" tag={Link} to="/app/qbank/create-question">
+      + create question
+    </Button>
+  )
   const [pageTable2, setPageTable2] = useState(1)
 
   const [dataTable2, setDataTable2] = useState([])
@@ -50,52 +71,77 @@ function Qbank() {
       ),
     )
   }, [pageTable2])
+
   return (
     <>
       <PageTitle>
         <div className="flex justify-between">
           <div>Questions Bank</div>
           <div className="float-right">
-            <Button
-              size="small"
-              tag={Link}
-              to="/app/product/stock-adjustment/new"
-            >
-              + new package
-            </Button>
+            {link === 'packages'
+              ? btnCreatePackage
+              : link === 'sections'
+              ? btnCreateSection
+              : btnCreateQuestion}
           </div>
         </div>
       </PageTitle>
       <hr />
       <div className="grid gap-6 mt-4 mb-4 md:grid-cols-2 xl:grid-cols-3">
-        <InfoCard title="Packages" value="10">
-          <RoundIcon
-            icon={CardsIcon}
-            iconColorClass="text-blue-500 dark:text-blue-100"
-            bgColorClass="bg-blue-100 dark:bg-blue-500"
-            className="mr-4"
-          />
-        </InfoCard>
-
-        <InfoCard title="Sections" value="500">
-          <RoundIcon
-            icon={ModalsIcon}
-            iconColorClass="text-orange-500 dark:text-orange-100"
-            bgColorClass="bg-orange-100 dark:bg-orange-500"
-            className="mr-4"
-          />
-        </InfoCard>
-        <InfoCard title="Question" value="1000">
-          <RoundIcon
-            icon={MenuIcon}
-            iconColorClass="text-red-500 dark:text-red-100"
-            bgColorClass="bg-red-100 dark:bg-red-500"
-            className="mr-4"
-          />
-        </InfoCard>
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            setLink('packages')
+          }}
+        >
+          <InfoCard title="Packages" value="10">
+            <RoundIcon
+              icon={CardsIcon}
+              iconColorClass="text-blue-500 dark:text-blue-100"
+              bgColorClass="bg-blue-100 dark:bg-blue-500"
+              className="mr-4"
+            />
+          </InfoCard>
+        </div>
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            setLink('sections')
+          }}
+        >
+          <InfoCard title="Sections" value="500">
+            <RoundIcon
+              icon={ModalsIcon}
+              iconColorClass="text-orange-500 dark:text-orange-100"
+              bgColorClass="bg-orange-100 dark:bg-orange-500"
+              className="mr-4"
+            />
+          </InfoCard>
+        </div>
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            setLink('questions')
+          }}
+        >
+          <InfoCard title="Question" value="1000">
+            <RoundIcon
+              icon={MenuIcon}
+              iconColorClass="text-red-500 dark:text-red-100"
+              bgColorClass="bg-red-100 dark:bg-red-500"
+              className="mr-4"
+            />
+          </InfoCard>
+        </div>
       </div>
-
-      <SectionTitle>Packages</SectionTitle>
+      <div className="my-4">{boxCreatePackage ? <CreatePackages /> : ''}</div>
+      <SectionTitle>
+        {link === 'packages'
+          ? 'Package list'
+          : link === 'sections'
+          ? 'Section list'
+          : 'Question list'}
+      </SectionTitle>
       <TableContainer className="mb-8">
         <Table>
           <TableHeader>

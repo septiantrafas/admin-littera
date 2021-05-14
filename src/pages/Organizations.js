@@ -21,9 +21,18 @@ import { EditIcon, TrashIcon } from '../icons'
 
 import response from '../utils/demo/tableData'
 import SectionTitle from '../components/Typography/SectionTitle'
+import CreateParticipants from './CreateParticipants'
 // make a copy of the data, for the second table
 const response2 = response.concat([])
 function Organizations() {
+  const [link, setLink] = useState('organizations')
+  const [newPartBox, setNewPartBox] = useState(false)
+  const buttonOrg = (
+    <Button size="small" tag={Link} to="/app/organizations/create-organization">
+      + new organization
+    </Button>
+  )
+
   const [pageTable2, setPageTable2] = useState(1)
 
   const [dataTable2, setDataTable2] = useState([])
@@ -48,46 +57,11 @@ function Organizations() {
       <PageTitle>
         <div className="flex justify-between">
           <div>Organizations</div>
-          <div className="float-right">
-            <Button
-              size="small"
-              tag={Link}
-              to="/app/product/stock-adjustment/new"
-            >
-              new company
-            </Button>
-          </div>
+          <div className="float-right">{buttonOrg}</div>
         </div>
       </PageTitle>
-      <hr />
-      <div className="grid gap-6 mt-4 mb-4 md:grid-cols-2 xl:grid-cols-4 ">
-        <div
-          onClick={() => {
-            console.log('cli')
-          }}
-          className="cursor-pointer"
-        >
-          <InfoCard title="Company" value="10">
-            <RoundIcon
-              icon={PeopleIcon}
-              iconColorClass="text-blue-500 dark:text-blue-100"
-              bgColorClass="bg-blue-100 dark:bg-blue-500"
-              className="mr-4"
-            />
-          </InfoCard>
-        </div>
-
-        <InfoCard title="Participants" value="1000">
-          <RoundIcon
-            icon={PeopleIcon}
-            iconColorClass="text-orange-500 dark:text-orange-100"
-            bgColorClass="bg-orange-100 dark:bg-orange-500"
-            className="mr-4"
-          />
-        </InfoCard>
-      </div>
-
-      <SectionTitle>Company</SectionTitle>
+      <hr className="mb-4" />
+      <SectionTitle>Company list</SectionTitle>
       <TableContainer className="mb-8">
         <Table>
           <TableHeader>

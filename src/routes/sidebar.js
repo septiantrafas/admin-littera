@@ -12,14 +12,14 @@ const routes = [
     name: 'Dashboard', // name that appear in Sidebar
   },
   {
-    path: '/app/exam',
-    icon: 'CardsIcon',
-    name: 'Exam',
-  },
-  {
     path: '/app/organizations',
     icon: 'PeopleIcon',
     name: 'Organizations',
+  },
+  {
+    path: '/app/exam',
+    icon: 'CardsIcon',
+    name: 'Exam',
   },
   {
     path: '/app/qbank',
@@ -30,6 +30,11 @@ const routes = [
     path: '/app/report',
     icon: 'FormsIcon',
     name: 'Report',
+  },
+  {
+    path: '/app/profiles',
+    icon: 'PeopleIcon',
+    name: 'Profiles',
   },
   // {
   //   path: '/app/dashboard', // the url

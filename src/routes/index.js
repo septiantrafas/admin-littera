@@ -14,6 +14,14 @@ const Exam = lazy(() => import('../pages/Exam'))
 const Organizations = lazy(() => import('../pages/Organizations'))
 const QBank = lazy(() => import('../pages/QBank'))
 const Report = lazy(() => import('../pages/Report'))
+const CreateSchedule = lazy(() => import('../pages/CreateSchedules.js'))
+const CreateOrganization = lazy(() => import('../pages/CreateOrganizations'))
+const CreateParticipant = lazy(() => import('../pages/CreateParticipants.js'))
+const CreateSection = lazy(() => import('../pages/CreateSections'))
+const CreateQuestion = lazy(() => import('../pages/CreateQuestions'))
+const Profiles = lazy(() => import('../pages/Profiles'))
+const CreateProfiles = lazy(() => import('../pages/CreateProfiles'))
+
 /**
  * ⚠ These are internal routes!
  * They will be rendered inside the app, using the default `containers/Layout`.
@@ -34,16 +42,44 @@ const routes = [
     component: Exam, // view rendered
   },
   {
+    path: '/exam/create-schedule', // the url
+    component: CreateSchedule, // view rendered
+  },
+  {
     path: '/organizations', // the url
     component: Organizations, // view rendered
+  },
+  {
+    path: '/organizations/create-organization', // the url
+    component: CreateOrganization, // view rendered
+  },
+  {
+    path: '/organizations/create-participant', // the url
+    component: CreateParticipant, // view rendered
   },
   {
     path: '/qbank', // the url
     component: QBank, // view rendered
   },
   {
+    path: '/qbank/create-section', // the url
+    component: CreateSection, // view rendered
+  },
+  {
+    path: '/qbank/create-question', // the url
+    component: CreateQuestion, // view rendered
+  },
+  {
     path: '/report', // the url
     component: Report, // view rendered
+  },
+  {
+    path: '/profiles', // the url
+    component: Profiles, // view rendered
+  },
+  {
+    path: '/profiles/create-profile', // the url
+    component: CreateProfiles, // view rendered
   },
   {
     path: '/forms',

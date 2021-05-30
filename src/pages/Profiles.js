@@ -22,36 +22,50 @@ import { EditIcon, TrashIcon } from '../icons'
 import response from '../utils/demo/tableData'
 import SectionTitle from '../components/Typography/SectionTitle'
 import CreateParticipants from './CreateParticipants'
-// make a copy of the data, for the second table
-const response2 = response.concat([])
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteProfile, fetchProfile } from '../app/profilesSlice'
+
 function Profiles() {
-  const [link, setLink] = useState('profiles')
-  const [newPartBox, setNewPartBox] = useState(false)
+  const dispatch = useDispatch()
   const buttonPrf = (
     <Button size="small" tag={Link} to="/app/profiles/create-profile">
       + new profile
     </Button>
   )
+  const response = useSelector((state) => state.profiles.profileList)
+  const profileListStatus = useSelector(
+    (state) => state.profiles.profileListStatus,
+  )
 
-  const [pageTable2, setPageTable2] = useState(1)
+  useEffect(() => {
+    if (profileListStatus === 'idle') {
+      dispatch(fetchProfile())
+    }
+  }, [profileListStatus, dispatch])
 
-  const [dataTable2, setDataTable2] = useState([])
+  const [pageTable, setPageTable] = useState(1)
+
+  const [dataTable, setDataTable] = useState([])
 
   const resultsPerPage = 7
   const totalResults = response.length
 
   function onPageChangeTable2(p) {
-    setPageTable2(p)
+    setPageTable(p)
+  }
+
+  function removeProfile(id) {
+    dispatch(deleteProfile(id))
   }
 
   useEffect(() => {
-    setDataTable2(
-      response2.slice(
-        (pageTable2 - 1) * resultsPerPage,
-        pageTable2 * resultsPerPage,
+    setDataTable(
+      response.slice(
+        (pageTable - 1) * resultsPerPage,
+        pageTable * resultsPerPage,
       ),
     )
-  }, [pageTable2])
+  }, [response, pageTable])
   return (
     <>
       <PageTitle>
@@ -67,44 +81,51 @@ function Profiles() {
           <TableHeader>
             <tr>
               <TableCell>Display name</TableCell>
-              <TableCell>Phone</TableCell>
+              <TableCell>Gender</TableCell>
+              <TableCell>Identity</TableCell>
+              <TableCell>Birth</TableCell>
               <TableCell>Address</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Balance</TableCell>
+              <TableCell>Role</TableCell>
               <TableCell>Action</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((user, i) => (
+            {dataTable.map((data, i) => (
               <TableRow key={i}>
                 <TableCell>
                   <div className="flex items-center text-sm">
                     <div>
-                      <p className="font-semibold">{user.name}</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {user.job}
-                      </p>
+                      <p className="font-semibold">{data.name}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400"></p>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm">$ {user.amount}</span>
+                  <span className="text-sm">{data.gender}</span>
                 </TableCell>
                 <TableCell>
-                  <Badge type={user.status}>{user.status}</Badge>
+                  <span>{data.identity}</span>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm">
-                    {new Date(user.date).toLocaleDateString()}
-                  </span>
+                  <span className="text-sm">{data.birth_date}</span>
                 </TableCell>
-                <TableCell></TableCell>
+                <TableCell>
+                  <span className="text-sm">{data.address}</span>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm">{data.role}</span>
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
                     <Button layout="link" size="icon" aria-label="Edit">
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
-                    <Button layout="link" size="icon" aria-label="Delete">
+                    <Button
+                      onClick={() => removeProfile(data.id)}
+                      layout="link"
+                      size="icon"
+                      aria-label="Delete"
+                    >
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>

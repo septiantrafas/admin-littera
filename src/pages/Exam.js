@@ -12,26 +12,110 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
-  Badge,
-  Avatar,
   Button,
   Pagination,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../icons'
-
-import response from '../utils/demo/tableData'
 import { Link } from 'react-router-dom'
 import CreateParticipants from './CreateParticipants'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteSchedule, fetchSchedule } from '../app/schedulesSlice'
+import { deleteParticipant, fetchParticipant } from '../app/participantsSlice'
 // make a copy of the data, for the second table
-const response2 = response.concat([])
+
+function ParticipantTable() {
+  const dispatch = useDispatch()
+  const response = useSelector((state) => state.participants.participantList)
+  const participantListStatus = useSelector(
+    (state) => state.participants.participantListStatus,
+  )
+
+  useEffect(() => {
+    if (participantListStatus === 'idle') {
+      dispatch(fetchParticipant())
+    }
+  }, [participantListStatus, dispatch])
+
+  const [pageTable, setPageTable] = useState(1)
+  const [dataTable, setDataTable] = useState([])
+  const resultsPerPage = 7
+  const totalResults = response.length
+  function onPageChangeTable(p) {
+    setPageTable(p)
+  }
+  useEffect(() => {
+    setDataTable(
+      response.slice(
+        (pageTable - 1) * resultsPerPage,
+        pageTable * resultsPerPage,
+      ),
+    )
+  }, [pageTable, response])
+  return (
+    <>
+      <TableContainer className="mb-8">
+        <Table>
+          <TableHeader>
+            <tr>
+              <TableCell>Schedule date</TableCell>
+              <TableCell>Profile name</TableCell>
+              <TableCell>Actions</TableCell>
+            </tr>
+          </TableHeader>
+          <TableBody>
+            {dataTable.map((user, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  <div className="flex items-center text-sm">
+                    <div>
+                      <p className="font-semibold">
+                        {user.schedules.exam_date}
+                      </p>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {user.profiles.name}
+                  </p>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center space-x-4">
+                    <Button layout="link" size="icon" aria-label="Edit">
+                      <EditIcon className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        dispatch(deleteParticipant(user.id))
+                      }}
+                      layout="link"
+                      size="icon"
+                      aria-label="Delete"
+                    >
+                      <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <TableFooter>
+          <Pagination
+            totalResults={totalResults}
+            resultsPerPage={resultsPerPage}
+            onChange={onPageChangeTable}
+            label="Table navigation"
+          />
+        </TableFooter>
+      </TableContainer>
+    </>
+  )
+}
 
 function Exam() {
   const [link, setLink] = useState('schedules')
   const [newPartBox, setNewPartBox] = useState(false)
-  const [pageTable2, setPageTable2] = useState(1)
-  const [dataTable2, setDataTable2] = useState([])
-  const resultsPerPage = 7
-  const totalResults = response.length
 
   const buttonSch = (
     <Button size="small" tag={Link} to="/app/exam/create-schedule">
@@ -49,19 +133,6 @@ function Exam() {
       + new participant
     </Button>
   )
-
-  function onPageChangeTable2(p) {
-    setPageTable2(p)
-  }
-
-  useEffect(() => {
-    setDataTable2(
-      response2.slice(
-        (pageTable2 - 1) * resultsPerPage,
-        pageTable2 * resultsPerPage,
-      ),
-    )
-  }, [pageTable2])
 
   return (
     <>
@@ -107,12 +178,53 @@ function Exam() {
           </InfoCard>
         </div>
       </div>
+
       <div className="mt-4">{newPartBox ? <CreateParticipants /> : ''}</div>
       <SectionTitle>
         {link === 'schedules' ? 'Schedule list' : 'Participant list'}
       </SectionTitle>
 
-      <TableContainer className="mb-8">
+      {link === 'schedules' ? <ScheduleTable /> : <ParticipantTable />}
+    </>
+  )
+}
+
+export default Exam
+
+function ScheduleTable() {
+  const dispatch = useDispatch()
+  const response = useSelector((state) => state.schedules.scheduleList)
+  const scheduleListStatus = useSelector(
+    (state) => state.schedules.scheduleListStatus,
+  )
+
+  const [pageTable, setPageTable] = useState(1)
+  const [dataTable, setDataTable] = useState([])
+  const resultsPerPage = 7
+  const totalResults = response.length
+
+  useEffect(() => {
+    if (scheduleListStatus === 'idle') {
+      dispatch(fetchSchedule())
+    }
+  }, [scheduleListStatus, dispatch])
+
+  function onPageChangeTable(p) {
+    setPageTable(p)
+  }
+
+  useEffect(() => {
+    setDataTable(
+      response.slice(
+        (pageTable - 1) * resultsPerPage,
+        pageTable * resultsPerPage,
+      ),
+    )
+  }, [pageTable, response])
+
+  return (
+    <>
+      <TableContainer className="mb-8 w-full">
         <Table>
           <TableHeader>
             <tr>
@@ -125,18 +237,18 @@ function Exam() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((user, i) => (
+            {dataTable.map((user, i) => (
               <TableRow key={i}>
                 <TableCell>
                   <div className="flex items-center text-sm">
                     <div>
-                      <p className="font-semibold">{user.name}</p>
+                      <p className="font-semibold">{user.packages.name}</p>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">
-                    {user.job}
+                    {user.organizations.name}
                   </p>
                 </TableCell>
                 <TableCell>
@@ -147,13 +259,11 @@ function Exam() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm">
-                    {new Date(user.date).toLocaleDateString()}
-                  </span>
+                  <span className="text-sm">{user.exam_date}</span>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">
-                    {user.job}
+                    {user.url}
                   </p>
                 </TableCell>
                 <TableCell>
@@ -161,7 +271,14 @@ function Exam() {
                     <Button layout="link" size="icon" aria-label="Edit">
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
-                    <Button layout="link" size="icon" aria-label="Delete">
+                    <Button
+                      onClick={() => {
+                        dispatch(deleteSchedule(user.id))
+                      }}
+                      layout="link"
+                      size="icon"
+                      aria-label="Delete"
+                    >
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>
@@ -174,7 +291,7 @@ function Exam() {
           <Pagination
             totalResults={totalResults}
             resultsPerPage={resultsPerPage}
-            onChange={onPageChangeTable2}
+            onChange={onPageChangeTable}
             label="Table navigation"
           />
         </TableFooter>
@@ -182,5 +299,3 @@ function Exam() {
     </>
   )
 }
-
-export default Exam

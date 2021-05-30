@@ -11,8 +11,7 @@ import {
 import { unwrapResult } from '@reduxjs/toolkit'
 import toast, { Toaster, useToaster } from 'react-hot-toast'
 import { FulfillingBouncingCircleSpinner } from 'react-epic-spinners'
-
-function CreateOrganizations() {
+function CreateProctor() {
   const dispatch = useDispatch()
 
   const createOrganizationStatus = useSelector(
@@ -196,4 +195,4 @@ function CreateOrganizations() {
   )
 }
 
-export default CreateOrganizations
+export default CreateProctor

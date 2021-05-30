@@ -24,7 +24,11 @@ const initialState = {
 export const fetchParticipant = createAsyncThunk(
   'participants/fetchParticipant',
   async () => {
-    const response = await supabase.from('participants').select()
+    const response = await supabase
+      .from('participants')
+      .select(
+        `id,schedules:schedules_id(exam_date),profiles:profiles_id(id,name)`,
+      )
     return response
   },
 )

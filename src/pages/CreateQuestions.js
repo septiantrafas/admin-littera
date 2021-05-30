@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import PageTitle from '../components/Typography/PageTitle'
-import { Label, Select, Button, Input } from '@windmill/react-ui'
+import { Label, Select, Button, Input, Textarea } from '@windmill/react-ui'
 import { useFieldArray, useForm } from 'react-hook-form'
 import FieldArray from '../components/Form/itemsFieldArray'
 import { Editor } from '@tinymce/tinymce-react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect, useHistory } from 'react-router-dom'
 import ntol from 'number-to-letter'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchPackage } from '../app/packagesSlice'
@@ -15,16 +15,25 @@ import {
 } from '../app/sectionsSlice'
 import {
   clearCreateQuestionStatus,
+  clearQuestionBySectionIdStatus,
   createNewQuestion,
+  fetchQuestionBySectionId,
 } from '../app/questionsSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
 
 function CreateQuestions() {
+  let history = useHistory()
   const dispatch = useDispatch()
   const packages = useSelector((state) => state.packages.packageList)
   const sections = useSelector((state) => state.sections.sectionByIdPackage)
   const createQuestionStatus = useSelector(
     (state) => state.questions.createQuestionStatus,
+  )
+  const questionBySectionId = useSelector(
+    (state) => state.questions.questionBySectionId,
+  )
+  const questionBySectionIdStatus = useSelector(
+    (state) => state.questions.questionBySectionIdStatus,
   )
   const [packageId, setPackageId] = useState('')
   const [sectionId, setSectionId] = useState('')
@@ -32,10 +41,14 @@ function CreateQuestions() {
     (state) => state.packages.packageListStatus,
   )
 
+  const [number, setNumber] = useState(0)
+
   const [questionValue, setQuestionValue] = useState('')
+  const [textValue, setTextValue] = useState('')
   const [fields, setFields] = useState([{ value: null }])
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, setValue } = useForm()
   const canSave = createQuestionStatus === 'idle'
+
   useEffect(() => {
     if (packageListStatus === 'idle') {
       dispatch(fetchPackage())
@@ -43,14 +56,24 @@ function CreateQuestions() {
   }, [packageListStatus, dispatch])
 
   useEffect(() => {
+    if (questionBySectionIdStatus === 'idle') {
+      dispatch(fetchQuestionBySectionId(sectionId))
+    }
+  }, [questionBySectionIdStatus, dispatch])
+
+  useEffect(() => {
     dispatch(fetchSectionByIdPackage(packageId))
   }, [packageId, dispatch])
 
   useEffect(() => {
+    dispatch(clearQuestionBySectionIdStatus())
     dispatch(fetchSectionById(sectionId))
   }, [sectionId, dispatch])
 
-  useEffect(() => {})
+  useEffect(() => {
+    setNumber(questionBySectionId.length + 1)
+    setValue('number', questionBySectionId.length + 1)
+  }, [questionBySectionId])
 
   function handleChange(i, editor) {
     const values = [...fields]
@@ -74,6 +97,7 @@ function CreateQuestions() {
     if (canSave)
       try {
         data.question = questionValue
+        data.text = textValue
         data.options = JSON.stringify(fields)
         const resultAction = await dispatch(createNewQuestion(data))
         unwrapResult(resultAction)
@@ -81,6 +105,10 @@ function CreateQuestions() {
         console.log(e)
       } finally {
         dispatch(clearCreateQuestionStatus())
+        setQuestionValue('')
+        setTextValue('')
+        setFields([{ value: null }])
+        history.push('/app/qbank')
       }
   }
 
@@ -102,10 +130,11 @@ function CreateQuestions() {
                   select option
                 </option>
                 {packages.map((data) => {
-                  return <option value={data.id}>{data.id}</option>
+                  return <option value={data.id}>{data.name}</option>
                 })}
               </Select>
             </Label>
+
             <Label className="mt-1">
               <span>Section </span>
               <Select
@@ -127,13 +156,44 @@ function CreateQuestions() {
             <Label className="mt-1">
               <span>Number</span>
               <Input
+                readOnly
                 type="number"
                 className="mt-1"
                 defaultValue=""
+                value={number}
                 {...register('number')}
               />
             </Label>
           </div>
+          <Label>
+            <span>Text</span>
+            <Editor
+              apiKey="awlfaezu5y4xg5bp5dpcfy1vmmop4jjhw73t36hys3why589"
+              value={textValue}
+              onEditorChange={(editor) => {
+                setTextValue(editor)
+              }}
+              init={{
+                height: 500,
+                menubar: false,
+                external_plugins: {
+                  tiny_mce_wiris:
+                    'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                },
+                plugins:
+                  'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+                imagetools_cors_hosts: ['picsum.photos'],
+                menubar: 'file edit view insert format tools table help',
+                toolbar:
+                  'undo redo | tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+                toolbar_sticky: true,
+                skin: 'oxide-dark',
+
+                content_style:
+                  'body { font-family:Helvetica,Arial,sans-serif; font-size:14px; resize:vertical ; ',
+              }}
+            />
+          </Label>
           <Label>
             <span>Question</span>
             <Editor
@@ -141,6 +201,7 @@ function CreateQuestions() {
               onEditorChange={(editor) => {
                 setQuestionValue(editor)
               }}
+              value={questionValue}
               init={{
                 height: 500,
                 menubar: false,
@@ -214,7 +275,7 @@ function CreateQuestions() {
               type="button"
               onClick={() => handleAdd()}
             >
-              + question
+              + option
             </Button>
           </Label>
           <Label className="mt-1">

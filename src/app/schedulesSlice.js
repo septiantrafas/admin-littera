@@ -24,7 +24,11 @@ const initialState = {
 export const fetchSchedule = createAsyncThunk(
   'schedules/fetchSchedule',
   async () => {
-    const response = await supabase.from('schedules').select()
+    const response = await supabase
+      .from('schedules')
+      .select(
+        `id,name,url,exam_date,packages:packages_id(name),organizations:organizations_id(name)`,
+      )
     return response
   },
 )

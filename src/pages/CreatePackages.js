@@ -61,19 +61,6 @@ function CreatePackages() {
     <>
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Label className="mt-1">
-            <span>Organization</span>
-            <Select
-              className="mt-1"
-              defaultValue=""
-              {...register('organizations_id')}
-            >
-              <option disabled>select option</option>
-              {organizations.map((data) => {
-                return <option value={data.id}>{data.name}</option>
-              })}
-            </Select>
-          </Label>
           <Label>
             <span>Name</span>
             <Input className="mt-1" defaultValue="" {...register('name')} />

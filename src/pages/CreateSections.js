@@ -68,7 +68,7 @@ function CreateSections() {
           </Label>
           <Label>
             <span>Context</span>
-            <Input className="mt-1" {...register('context')} />
+            <Textarea className="mt-1" {...register('context')} />
           </Label>
           <Label>
             <span>Start time</span>

@@ -7,6 +7,9 @@ const initialState = {
   questionList: [],
   questionListStatus: 'idle',
   questionListError: null,
+  questionBySectionId: [],
+  questionBySectionIdStatus: 'idle',
+  questionBySectionIdError: null,
   questionById: [],
   questionByIdStatus: 'idle',
   questionByIdError: null,
@@ -33,6 +36,17 @@ export const fetchQuestionById = createAsyncThunk(
   'questions/fetchQuestionById',
   async (id) => {
     const response = await supabase.from('questions').select('*').eq('id', id)
+    return response
+  },
+)
+
+export const fetchQuestionBySectionId = createAsyncThunk(
+  'questions/fetchQuestionBySectionId',
+  async (id) => {
+    const response = await supabase
+      .from('questions')
+      .select('*')
+      .eq('sections_id', id)
     return response
   },
 )
@@ -87,6 +101,9 @@ const questionsSlice = createSlice({
     clearCreateQuestionStatus: (state) => {
       state.createQuestionStatus = 'idle'
     },
+    clearQuestionBySectionIdStatus: (state) => {
+      state.questionBySectionIdStatus = 'idle'
+    },
   },
   extraReducers: {
     [fetchQuestion.pending]: (state) => {
@@ -110,6 +127,21 @@ const questionsSlice = createSlice({
     [fetchQuestionById.rejected]: (state, action) => {
       state.questionByIdStatus = 'failed'
       state.questionByIdError = action.error.message
+    },
+    [fetchQuestionBySectionId.pending]: (state) => {
+      state.questionBySectionIdStatus = 'loading'
+    },
+    [fetchQuestionBySectionId.fulfilled]: (state, action) => {
+      state.questionBySectionIdStatus = 'succeeded'
+      if (action.payload.error) {
+        state.questionBySectionId = []
+      } else {
+        state.questionBySectionId = action.payload.data
+      }
+    },
+    [fetchQuestionBySectionId.rejected]: (state, action) => {
+      state.questionBySectionIdStatus = 'failed'
+      state.questionBySectionIdError = action.error.message
     },
     [createNewQuestion.pending]: (state) => {
       state.createQuestionStatus = 'loading'
@@ -156,6 +188,7 @@ export const {
   clearQuestionByIdStatus,
   clearQuestionDeleteStatus,
   clearCreateQuestionStatus,
+  clearQuestionBySectionIdStatus,
 } = questionsSlice.actions
 
 export default questionsSlice.reducer

@@ -78,6 +78,15 @@ function CreateProfiles() {
               {...register('photo_url')}
             />
           </Label>
+          <Label className="mt-1">
+            <span>Role</span>
+            <Select className="mt-1" defaultValue="" {...register('role')}>
+              <option disabled>select option</option>
+              <option>Participant</option>
+              <option>Proctor</option>
+              <option>Employee</option>
+            </Select>
+          </Label>
           <div className="flex justify-between my-4">
             <div>
               <Button tag={Link} to="/app/organizations" size="small">

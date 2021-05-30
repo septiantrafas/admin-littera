@@ -36,6 +36,11 @@ const routes = [
     icon: 'PeopleIcon',
     name: 'Profiles',
   },
+  {
+    path: '/app/proctor',
+    icon: 'ForbiddenIcon',
+    name: 'Proctor',
+  },
   // {
   //   path: '/app/dashboard', // the url
   //   icon: 'HomeIcon', // the component being exported from icons/index.js

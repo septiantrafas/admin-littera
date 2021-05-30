@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import PageTitle from '../components/Typography/PageTitle'
 import { Link } from 'react-router-dom'
+import InfoCard from '../components/Cards/InfoCard'
+import RoundIcon from '../components/RoundIcon'
+import { PeopleIcon } from '../icons'
 
 import {
   Table,
@@ -10,6 +13,7 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
+  Badge,
   Button,
   Pagination,
 } from '@windmill/react-ui'
@@ -24,11 +28,11 @@ import {
 
 // make a copy of the data, for the second table
 
-function Organizations() {
+function Proctor() {
   const dispatch = useDispatch()
   const buttonOrg = (
     <Button size="small" tag={Link} to="/app/organizations/create-organization">
-      + new organization
+      + new proctor
     </Button>
   )
   const response = useSelector((state) => state.organizations.organizationList)
@@ -87,7 +91,7 @@ function Organizations() {
       </div> */}
       <PageTitle>
         <div className="flex justify-between">
-          <div>Organizations</div>
+          <div>Proctor</div>
           <div className="float-right">{buttonOrg}</div>
         </div>
       </PageTitle>
@@ -98,6 +102,7 @@ function Organizations() {
           <TableHeader>
             <tr>
               <TableCell>Company name</TableCell>
+
               <TableCell>Phone</TableCell>
               <TableCell>Address</TableCell>
               <TableCell>Email</TableCell>
@@ -162,4 +167,4 @@ function Organizations() {
   )
 }
 
-export default Organizations
+export default Proctor

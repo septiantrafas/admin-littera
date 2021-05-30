@@ -99,7 +99,7 @@ function CreateSchedules() {
           <Label>
             <span>Exam date</span>
             <Input
-              type="date"
+              type="datetime-local"
               className="mt-1"
               defaultValue=""
               {...register('exam_date')}

@@ -27,7 +27,9 @@ const initialState = {
 export const fetchSection = createAsyncThunk(
   'sections/fetchSection',
   async () => {
-    const response = await supabase.from('sections').select()
+    const response = await supabase
+      .from('sections')
+      .select(`id,packages_id,number,title,context,start_time,end_time`)
     return response
   },
 )

@@ -73,11 +73,10 @@ export const updateQuestion = createAsyncThunk(
     const { data, error } = await supabase
       .from('questions')
       .update({
-        address: updatedData.address,
-        email: updatedData.email,
-        name: updatedData.name,
-        phone: updatedData.phone,
-        pic_name: updatedData.pic_name,
+        text: updatedData.text,
+        question: updatedData.question,
+        options: updatedData.options,
+        keys: updatedData.keys,
       })
       .eq('id', updatedData.id)
     // if (error) return error
@@ -103,6 +102,9 @@ const questionsSlice = createSlice({
     },
     clearQuestionBySectionIdStatus: (state) => {
       state.questionBySectionIdStatus = 'idle'
+    },
+    clearQuestionUpdateStatus: (state) => {
+      state.questionUpdateStatus = 'idle'
     },
   },
   extraReducers: {
@@ -189,6 +191,7 @@ export const {
   clearQuestionDeleteStatus,
   clearCreateQuestionStatus,
   clearQuestionBySectionIdStatus,
+  clearQuestionUpdateStatus,
 } = questionsSlice.actions
 
 export default questionsSlice.reducer

@@ -3,18 +3,8 @@ import PageTitle from '../components/Typography/PageTitle'
 import { Link } from 'react-router-dom'
 import InfoCard from '../components/Cards/InfoCard'
 import RoundIcon from '../components/RoundIcon'
-import ReactHtmlParser, {
-  processNodes,
-  convertNodeToElement,
-  htmlparser2,
-} from 'react-html-parser'
-import {
-  CardsIcon,
-  ChartsIcon,
-  MenuIcon,
-  ModalsIcon,
-  PeopleIcon,
-} from '../icons'
+import ReactHtmlParser from 'react-html-parser'
+import { CardsIcon, MenuIcon, ModalsIcon } from '../icons'
 
 import {
   Table,
@@ -30,15 +20,46 @@ import {
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../icons'
 import CreatePackages from '../pages/CreatePackages'
-import response from '../utils/demo/tableData'
+
 import SectionTitle from '../components/Typography/SectionTitle'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteQuestion, fetchQuestion } from '../app/questionsSlice'
+import {
+  clearQuestionByIdStatus,
+  deleteQuestion,
+  fetchQuestion,
+} from '../app/questionsSlice'
 import { deletePackage, fetchPackage } from '../app/packagesSlice'
 import { deleteSection, fetchSection } from '../app/sectionsSlice'
 
 function Qbank() {
+  const dispatch = useDispatch()
+  const questionByIdStatus = useSelector(
+    (state) => state.questions.questionByIdStatus,
+  )
+  useEffect(() => {
+    if (questionByIdStatus === 'succeeded') {
+      dispatch(clearQuestionByIdStatus())
+    }
+  }, [questionByIdStatus])
+
   const [link, setLink] = useState('packages')
+
+  const packageList = useSelector((state) => state.packages.packageList)
+  const packageListStatus = useSelector(
+    (state) => state.packages.packageListStatus,
+  )
+  console.log(packageListStatus)
+  const sectionList = useSelector((state) => state.sections.sectionList)
+  const questionList = useSelector((state) => state.questions.questionList)
+
+  useEffect(() => {
+    if (packageListStatus === 'idle') {
+      dispatch(fetchPackage())
+      dispatch(fetchSection())
+      dispatch(fetchQuestion())
+    }
+  }, [packageListStatus, dispatch])
+
   const [boxCreatePackage, setBoxCreatePackage] = useState(false)
   const btnCreatePackage = (
     <Button
@@ -60,25 +81,6 @@ function Qbank() {
       + create question
     </Button>
   )
-  const [pageTable2, setPageTable] = useState(1)
-
-  const [dataTable, setDataTable] = useState([])
-
-  const resultsPerPage = 7
-  const totalResults = response.length
-
-  function onPageChangeTable2(p) {
-    setPageTable(p)
-  }
-
-  useEffect(() => {
-    setDataTable(
-      response.slice(
-        (pageTable2 - 1) * resultsPerPage,
-        pageTable2 * resultsPerPage,
-      ),
-    )
-  }, [pageTable2])
 
   return (
     <>
@@ -102,7 +104,7 @@ function Qbank() {
             setLink('packages')
           }}
         >
-          <InfoCard title="Packages" value="10">
+          <InfoCard title="Packages" value={packageList.length}>
             <RoundIcon
               icon={CardsIcon}
               iconColorClass="text-blue-500 dark:text-blue-100"
@@ -117,7 +119,7 @@ function Qbank() {
             setLink('sections')
           }}
         >
-          <InfoCard title="Sections" value="500">
+          <InfoCard title="Sections" value={sectionList.length}>
             <RoundIcon
               icon={ModalsIcon}
               iconColorClass="text-orange-500 dark:text-orange-100"
@@ -132,7 +134,7 @@ function Qbank() {
             setLink('questions')
           }}
         >
-          <InfoCard title="Question" value="1000">
+          <InfoCard title="Question" value={questionList.length}>
             <RoundIcon
               icon={MenuIcon}
               iconColorClass="text-red-500 dark:text-red-100"
@@ -151,11 +153,11 @@ function Qbank() {
           : 'Question list'}
       </SectionTitle>
       {link === 'packages' ? (
-        <PackageListTable />
+        <PackageListTable packageList={packageList} />
       ) : link === 'sections' ? (
-        <SectionListTable />
+        <SectionListTable sectionList={sectionList} />
       ) : link === 'questions' ? (
-        <QuestionListTable />
+        <QuestionListTable questionList={questionList} />
       ) : (
         ''
       )}
@@ -165,18 +167,11 @@ function Qbank() {
 
 export default Qbank
 
-function PackageListTable() {
+function PackageListTable({ packageList }) {
   const dispatch = useDispatch()
-  const response = useSelector((state) => state.packages.packageList)
-  const packageListStatus = useSelector(
-    (state) => state.packages.packageListStatus,
-  )
 
-  useEffect(() => {
-    if (packageListStatus === 'idle') {
-      dispatch(fetchPackage())
-    }
-  }, [packageListStatus, dispatch])
+  const response = packageList
+
   const [pageTable, setPageTable] = useState(1)
 
   const [dataTable, setDataTable] = useState([])
@@ -254,18 +249,11 @@ function PackageListTable() {
   )
 }
 
-function SectionListTable() {
+function SectionListTable({ sectionList }) {
   const dispatch = useDispatch()
-  const response = useSelector((state) => state.sections.sectionList)
-  const sectionListStatus = useSelector(
-    (state) => state.sections.sectionListStatus,
-  )
 
-  useEffect(() => {
-    if (sectionListStatus === 'idle') {
-      dispatch(fetchSection())
-    }
-  }, [sectionListStatus, dispatch])
+  const response = sectionList
+
   const [pageTable, setPageTable] = useState(1)
 
   const [dataTable, setDataTable] = useState([])
@@ -308,7 +296,7 @@ function SectionListTable() {
               <TableCell>
                 <div className="flex items-center text-sm">
                   <div>
-                    <p className="font-semibold">{data.title}</p>
+                    <p className="font-semibold">{data.titles}</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400">
                       {data.id}
                     </p>
@@ -358,18 +346,10 @@ function SectionListTable() {
   )
 }
 
-function QuestionListTable() {
+function QuestionListTable({ questionList }) {
   const dispatch = useDispatch()
-  const response = useSelector((state) => state.questions.questionList)
-  const questionListStatus = useSelector(
-    (state) => state.questions.questionListStatus,
-  )
+  const response = questionList
 
-  useEffect(() => {
-    if (questionListStatus === 'idle') {
-      dispatch(fetchQuestion())
-    }
-  }, [questionListStatus, dispatch])
   const [pageTable, setPageTable] = useState(1)
 
   const [dataTable, setDataTable] = useState([])
@@ -432,9 +412,19 @@ function QuestionListTable() {
 
               <TableCell>
                 <div className="flex items-center space-x-4">
-                  <Button layout="link" size="icon" aria-label="Edit">
-                    <EditIcon className="w-5 h-5" aria-hidden="true" />
-                  </Button>
+                  <Link to={`/app/qbank/edit-question/${data.id}`}>
+                    <Button
+                      layout="link"
+                      size="icon"
+                      aria-label="Delete"
+                      layout="link"
+                      size="icon"
+                      aria-label="Edit"
+                    >
+                      <EditIcon className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+                  </Link>
+
                   <Button
                     onClick={() => removeQuestion(data.id)}
                     layout="link"

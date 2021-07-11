@@ -29,7 +29,7 @@ export const fetchSection = createAsyncThunk(
   async () => {
     const response = await supabase
       .from('sections')
-      .select(`id,packages_id,number,title,context,start_time,end_time`)
+      .select(`id,package_id,number,titles,context,start_time,end_time`)
     return response
   },
 )

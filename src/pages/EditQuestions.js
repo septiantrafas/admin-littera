@@ -1,75 +1,59 @@
 import React, { useEffect, useState } from 'react'
 import PageTitle from '../components/Typography/PageTitle'
 import { Label, Select, Button, Input, Textarea } from '@windmill/react-ui'
-import { useFieldArray, useForm } from 'react-hook-form'
-import FieldArray from '../components/Form/itemsFieldArray'
+import { useForm } from 'react-hook-form'
 import { Editor } from '@tinymce/tinymce-react'
-import { Link, Redirect, useHistory } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import ntol from 'number-to-letter'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchPackage } from '../app/packagesSlice'
-import { fetchSectionById, fetchSectionByIdPackage } from '../app/sectionsSlice'
+
 import {
-  clearCreateQuestionStatus,
-  clearQuestionBySectionIdStatus,
-  createNewQuestion,
-  fetchQuestionBySectionId,
+  clearQuestionUpdateStatus,
+  fetchQuestionById,
+  updateQuestion,
 } from '../app/questionsSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
 
-function CreateQuestions() {
+function EditQuestions() {
   let history = useHistory()
-  const dispatch = useDispatch()
-  const packages = useSelector((state) => state.packages.packageList)
-  const sections = useSelector((state) => state.sections.sectionByIdPackage)
-  const createQuestionStatus = useSelector(
-    (state) => state.questions.createQuestionStatus,
-  )
-  const questionBySectionId = useSelector(
-    (state) => state.questions.questionBySectionId,
-  )
-  const questionBySectionIdStatus = useSelector(
-    (state) => state.questions.questionBySectionIdStatus,
-  )
+  let { id } = useParams()
   const [packageId, setPackageId] = useState('')
   const [sectionId, setSectionId] = useState('')
-  const packageListStatus = useSelector(
-    (state) => state.packages.packageListStatus,
-  )
-
   const [number, setNumber] = useState(0)
-
   const [questionValue, setQuestionValue] = useState('')
   const [textValue, setTextValue] = useState('')
-  const [fields, setFields] = useState([{ value: null }])
+  const [fields, setFields] = useState([])
   const { register, handleSubmit, setValue } = useForm()
-  const canSave = createQuestionStatus === 'idle'
-
+  const dispatch = useDispatch()
+  const questionById = useSelector((state) => state.questions.questionById)
+  const questionByIdStatus = useSelector(
+    (state) => state.questions.questionByIdStatus,
+  )
+  const questionUpdateStatus = useSelector(
+    (state) => state.questions.questionUpdateStatus,
+  )
   useEffect(() => {
-    if (packageListStatus === 'idle') {
-      dispatch(fetchPackage())
+    if (questionByIdStatus === 'idle') {
+      dispatch(fetchQuestionById(id))
     }
-  }, [packageListStatus, dispatch])
+    setPackageId(questionById.package_id)
+    setTextValue(questionById.text)
+    setQuestionValue(questionById.question)
+  }, [questionByIdStatus, dispatch])
 
   useEffect(() => {
-    if (questionBySectionIdStatus === 'idle') {
-      dispatch(fetchQuestionBySectionId(sectionId))
+    if (questionByIdStatus === 'succeeded') {
+      setFields(JSON.parse(questionById.options))
     }
-  }, [questionBySectionIdStatus, dispatch])
+  }, [questionByIdStatus])
 
   useEffect(() => {
-    dispatch(fetchSectionByIdPackage(packageId))
-  }, [packageId, dispatch])
+    setPackageId(questionById.package_id)
+    setSectionId(questionById.section_id)
+    setNumber(questionById.number)
+  }, [packageId])
 
-  useEffect(() => {
-    dispatch(clearQuestionBySectionIdStatus())
-    dispatch(fetchSectionById(sectionId))
-  }, [sectionId, dispatch])
-
-  useEffect(() => {
-    setNumber(questionBySectionId.length + 1)
-    setValue('number', questionBySectionId.length + 1)
-  }, [questionBySectionId])
+  const canSave = questionUpdateStatus === 'idle'
 
   function handleChange(i, editor) {
     const values = [...fields]
@@ -92,25 +76,23 @@ function CreateQuestions() {
   const onSubmit = async (data) => {
     if (canSave)
       try {
+        data.id = id
         data.question = questionValue
         data.text = textValue
         data.options = JSON.stringify(fields)
-        const resultAction = await dispatch(createNewQuestion(data))
+        const resultAction = await dispatch(updateQuestion(data))
         unwrapResult(resultAction)
       } catch (e) {
         console.log(e)
       } finally {
-        dispatch(clearCreateQuestionStatus())
-        setQuestionValue('')
-        setTextValue('')
-        setFields([{ value: null }])
-        history.push('/app/qbank')
+        dispatch(clearQuestionUpdateStatus())
       }
+    console.log(data)
   }
 
   return (
     <>
-      <PageTitle>New Question</PageTitle>
+      <PageTitle>Edit Question</PageTitle>
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-6 mt-4 mb-4 md:grid-cols-2 xl:grid-cols-3">
@@ -125,9 +107,9 @@ function CreateQuestions() {
                 <option selected disabled>
                   select option
                 </option>
-                {packages.map((data) => {
-                  return <option value={data.id}>{data.name}</option>
-                })}
+                <option value={questionById.package_id}>
+                  {questionById.package_id}
+                </option>
               </Select>
             </Label>
 
@@ -142,11 +124,9 @@ function CreateQuestions() {
                 <option selected disabled>
                   select option
                 </option>
-                {sections
-                  ? sections.map((data) => {
-                      return <option value={data.id}>{data.title}</option>
-                    })
-                  : ''}
+                <option value={questionById.section_id}>
+                  {questionById.section_id}
+                </option>
               </Select>
             </Label>
             <Label className="mt-1">
@@ -239,6 +219,7 @@ function CreateQuestions() {
                   </div>
                   <Editor
                     apiKey="awlfaezu5y4xg5bp5dpcfy1vmmop4jjhw73t36hys3why589"
+                    initialValue={field.value}
                     onEditorChange={(editor) => {
                       handleChange(idx, editor)
                     }}
@@ -277,7 +258,9 @@ function CreateQuestions() {
           <Label className="mt-1">
             <span>Answer key</span>
             <Select className="mt-1" defaultValue="" {...register('keys')}>
-              <option disabled>select option</option>
+              <option selected disabled>
+                select option
+              </option>
               {fields.map((field, idx) => {
                 return <option value={ntol(idx)}>{ntol(idx)}</option>
               })}
@@ -301,4 +284,4 @@ function CreateQuestions() {
   )
 }
 
-export default CreateQuestions
+export default EditQuestions

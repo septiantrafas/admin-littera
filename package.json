@@ -31,6 +31,7 @@
     "chart.js": "2.9.3",
     "classnames": "2.2.6",
     "faker": "4.1.0",
+    "lossless-json": "^1.0.4",
     "mathjs": "^9.3.2",
     "number-to-letter": "^1.0.1",
     "react": "^16.13.1",

@@ -13,9 +13,6 @@ import {
   updateQuestion,
 } from '../app/questionsSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { clearPackageListStatus } from '../app/packagesSlice'
-import { clearSectionListStatus } from '../app/sectionsSlice'
-import { clearQuestionListStatus } from '../app/questionsSlice'
 
 function EditQuestions() {
   let history = useHistory()
@@ -35,19 +32,6 @@ function EditQuestions() {
   const questionUpdateStatus = useSelector(
     (state) => state.questions.questionUpdateStatus,
   )
-
-  const packageListStatus = useSelector(
-    (state) => state.packages.packageListStatus,
-  )
-
-  useEffect(() => {
-    if (packageListStatus === 'succeeded') {
-      dispatch(clearPackageListStatus())
-      dispatch(clearSectionListStatus())
-      dispatch(clearQuestionListStatus())
-    }
-  }, [packageListStatus, dispatch])
-
   useEffect(() => {
     if (questionByIdStatus === 'idle') {
       dispatch(fetchQuestionById(id))
@@ -102,7 +86,6 @@ function EditQuestions() {
         console.log(e)
       } finally {
         dispatch(clearQuestionUpdateStatus())
-        history.push('/app/qbank')
       }
     console.log(data)
   }

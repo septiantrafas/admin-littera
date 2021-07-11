@@ -46,7 +46,7 @@ export const fetchSectionByIdPackage = createAsyncThunk(
     const response = await supabase
       .from('sections')
       .select('*')
-      .eq('packages_id', id)
+      .eq('package_id', id)
     return response
   },
 )

@@ -48,7 +48,7 @@ export const fetchQuestionBySectionId = createAsyncThunk(
     const response = await supabase
       .from('questions')
       .select('*')
-      .eq('sections_id', id)
+      .eq('section_id', id)
     return response
   },
 )

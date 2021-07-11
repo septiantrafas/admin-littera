@@ -18,31 +18,38 @@ import {
 import { unwrapResult } from '@reduxjs/toolkit'
 
 function CreateQuestions() {
-  let history = useHistory()
   const dispatch = useDispatch()
+
+  let history = useHistory()
+
+  const { register, handleSubmit, setValue, watch } = useForm()
+  const packageId = watch('package_id')
+  // console.log(packageId)
+  const sectionId = watch('section_id')
+  console.log(sectionId)
+  const [number, setNumber] = useState(0)
+  const [questionValue, setQuestionValue] = useState('')
+  const [textValue, setTextValue] = useState('')
+  const [fields, setFields] = useState([{ value: null }])
+
   const packages = useSelector((state) => state.packages.packageList)
+
   const sections = useSelector((state) => state.sections.sectionByIdPackage)
-  const createQuestionStatus = useSelector(
-    (state) => state.questions.createQuestionStatus,
-  )
   const questionBySectionId = useSelector(
     (state) => state.questions.questionBySectionId,
+  )
+
+  const packageListStatus = useSelector(
+    (state) => state.packages.packageListStatus,
   )
   const questionBySectionIdStatus = useSelector(
     (state) => state.questions.questionBySectionIdStatus,
   )
-  const [packageId, setPackageId] = useState('')
-  const [sectionId, setSectionId] = useState('')
-  const packageListStatus = useSelector(
-    (state) => state.packages.packageListStatus,
+
+  const createQuestionStatus = useSelector(
+    (state) => state.questions.createQuestionStatus,
   )
 
-  const [number, setNumber] = useState(0)
-
-  const [questionValue, setQuestionValue] = useState('')
-  const [textValue, setTextValue] = useState('')
-  const [fields, setFields] = useState([{ value: null }])
-  const { register, handleSubmit, setValue } = useForm()
   const canSave = createQuestionStatus === 'idle'
 
   useEffect(() => {
@@ -118,9 +125,8 @@ function CreateQuestions() {
               <span>Package</span>
               <Select
                 className="mt-1"
-                onClick={(e) => setPackageId(e.target.value)}
                 defaultValue=""
-                {...register('packages_id')}
+                {...register('package_id')}
               >
                 <option selected disabled>
                   select option
@@ -136,15 +142,14 @@ function CreateQuestions() {
               <Select
                 className="mt-1"
                 defaultValue=""
-                onClick={(e) => setSectionId(e.target.value)}
-                {...register('sections_id')}
+                {...register('section_id')}
               >
                 <option selected disabled>
                   select option
                 </option>
                 {sections
                   ? sections.map((data) => {
-                      return <option value={data.id}>{data.title}</option>
+                      return <option value={data.id}>{data.titles}</option>
                     })
                   : ''}
               </Select>

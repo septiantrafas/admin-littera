@@ -40,18 +40,17 @@ function Qbank() {
     if (questionByIdStatus === 'succeeded') {
       dispatch(clearQuestionByIdStatus())
     }
-  }, [questionByIdStatus])
+  }, [questionByIdStatus, dispatch])
 
   const [link, setLink] = useState('packages')
 
   const packageList = useSelector((state) => state.packages.packageList)
-  const packageListStatus = useSelector(
-    (state) => state.packages.packageListStatus,
-  )
-  console.log(packageListStatus)
   const sectionList = useSelector((state) => state.sections.sectionList)
   const questionList = useSelector((state) => state.questions.questionList)
 
+  const packageListStatus = useSelector(
+    (state) => state.packages.packageListStatus,
+  )
   useEffect(() => {
     if (packageListStatus === 'idle') {
       dispatch(fetchPackage())

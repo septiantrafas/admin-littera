@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
-import { createClient } from '@supabase/supabase-js'
-const { REACT_APP_SUPABASE_KEY, REACT_APP_SUPABASE_URL } = process.env
-const supabase = createClient(REACT_APP_SUPABASE_URL, REACT_APP_SUPABASE_KEY)
+import { supabase } from '../supabase'
 
 const initialState = {
   sectionList: [],
@@ -91,6 +89,9 @@ const sectionsSlice = createSlice({
   name: 'sections',
   initialState,
   reducers: {
+    clearSectionListStatus: (state) => {
+      state.sectionListStatus = 'idle'
+    },
     clearSectionByIdData: (state) => {
       state.sectionById = []
     },
@@ -179,6 +180,7 @@ const sectionsSlice = createSlice({
 })
 
 export const {
+  clearSectionListStatus,
   clearSectionByIdData,
   clearSectionByIdStatus,
   clearSectionDeleteStatus,

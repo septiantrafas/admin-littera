@@ -25,7 +25,11 @@ const initialState = {
 export const fetchQuestion = createAsyncThunk(
   'questions/fetchQuestion',
   async () => {
-    const response = await supabase.from('questions').select()
+    const response = await supabase
+      .from('questions')
+      .select()
+      .order('section_id', { ascending: true })
+      .order('number', { ascending: true })
     return response
   },
 )

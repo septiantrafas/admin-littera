@@ -96,7 +96,7 @@ const packagesSlice = createSlice({
     },
     [fetchPackage.fulfilled]: (state, action) => {
       state.packageListStatus = 'succeeded'
-      state.packageList = state.packageList.concat(action.payload.data)
+      state.packageList = action.payload.data
     },
     [fetchPackage.rejected]: (state, action) => {
       state.packageListStatus = 'failed'

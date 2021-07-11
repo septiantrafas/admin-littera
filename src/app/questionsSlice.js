@@ -114,7 +114,7 @@ const questionsSlice = createSlice({
     },
     [fetchQuestion.fulfilled]: (state, action) => {
       state.questionListStatus = 'succeeded'
-      state.questionList = state.questionList.concat(action.payload.data)
+      state.questionList = action.payload.data
     },
     [fetchQuestion.rejected]: (state, action) => {
       state.questionListStatus = 'failed'

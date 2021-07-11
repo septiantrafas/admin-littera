@@ -111,7 +111,7 @@ const sectionsSlice = createSlice({
     },
     [fetchSection.fulfilled]: (state, action) => {
       state.sectionListStatus = 'succeeded'
-      state.sectionList = state.sectionList.concat(action.payload.data)
+      state.sectionList = action.payload.data
     },
     [fetchSection.rejected]: (state, action) => {
       state.sectionListStatus = 'failed'

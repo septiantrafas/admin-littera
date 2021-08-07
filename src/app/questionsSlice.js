@@ -8,6 +8,9 @@ const initialState = {
   questionBySectionId: [],
   questionBySectionIdStatus: 'idle',
   questionBySectionIdError: null,
+  questionByPackageId: [],
+  questionByPackageIdStatus: 'idle',
+  questionByPackageIdError: null,
   questionById: [],
   questionByIdStatus: 'idle',
   questionByIdError: null,
@@ -49,6 +52,17 @@ export const fetchQuestionBySectionId = createAsyncThunk(
       .from('questions')
       .select('*')
       .eq('section_id', id)
+    return response
+  },
+)
+
+export const fetchQuestionByPackageId = createAsyncThunk(
+  'questions/fetchQuestionByPackageId',
+  async (id) => {
+    const response = await supabase
+      .from('questions')
+      .select('*')
+      .eq('package_id', id)
     return response
   },
 )
@@ -123,6 +137,17 @@ const questionsSlice = createSlice({
     [fetchQuestion.rejected]: (state, action) => {
       state.questionListStatus = 'failed'
       state.questionListError = action.error.message
+    },
+    [fetchQuestionByPackageId.pending]: (state) => {
+      state.questionByPackageIdStatus = 'loading'
+    },
+    [fetchQuestionByPackageId.fulfilled]: (state, action) => {
+      state.questionByPackageIdStatus = 'succeeded'
+      state.questionByPackageId = action.payload.data
+    },
+    [fetchQuestionByPackageId.rejected]: (state, action) => {
+      state.questionByPackageIdStatus = 'failed'
+      state.questionByPackageIdError = action.error.message
     },
     [fetchQuestionById.pending]: (state) => {
       state.questionByIdStatus = 'loading'

@@ -19,9 +19,7 @@ import {
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../icons'
 
-import response from '../utils/demo/tableData'
 import SectionTitle from '../components/Typography/SectionTitle'
-import CreateParticipants from './CreateParticipants'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteProfile, fetchProfile } from '../app/profilesSlice'
 
@@ -32,6 +30,7 @@ function Profiles() {
       + new profile
     </Button>
   )
+
   const response = useSelector((state) => state.profiles.profileList)
   const profileListStatus = useSelector(
     (state) => state.profiles.profileListStatus,
@@ -44,10 +43,8 @@ function Profiles() {
   }, [profileListStatus, dispatch])
 
   const [pageTable, setPageTable] = useState(1)
-
   const [dataTable, setDataTable] = useState([])
-
-  const resultsPerPage = 7
+  const resultsPerPage = 10
   const totalResults = response.length
 
   function onPageChangeTable2(p) {

@@ -17,10 +17,6 @@ const EditQuestions = lazy(() => import('../pages/EditQuestions'))
 
 const routes = [
   {
-    path: '/dashboard',
-    component: Dashboard,
-  },
-  {
     path: '/exam',
     component: Exam,
   },

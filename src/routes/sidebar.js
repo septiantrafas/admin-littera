@@ -1,10 +1,5 @@
 const routes = [
   {
-    path: '/app/dashboard',
-    icon: 'HomeIcon',
-    name: 'Dashboard',
-  },
-  {
     path: '/app/organizations',
     icon: 'PeopleIcon',
     name: 'Organizations',

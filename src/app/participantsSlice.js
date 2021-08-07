@@ -24,9 +24,7 @@ export const fetchParticipant = createAsyncThunk(
   async () => {
     const response = await supabase
       .from('participants')
-      .select(
-        `id,schedules:schedule_id(exam_date),profiles:profile_id(id,name)`,
-      )
+      .select(`*,schedule_id(*),profile_id(*)`)
     return response
   },
 )

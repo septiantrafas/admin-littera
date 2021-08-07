@@ -68,7 +68,7 @@ function CreateParticipants() {
               <Select
                 className="mt-1"
                 defaultValue=""
-                {...register('schedules_id')}
+                {...register('schedule_id')}
               >
                 <option disabled>select option</option>
                 {schedules.map((data) => {
@@ -81,7 +81,7 @@ function CreateParticipants() {
               <Select
                 className="mt-1"
                 defaultValue=""
-                {...register('profiles_id')}
+                {...register('profile_id')}
               >
                 <option disabled>select option</option>
                 {profiles.map((data) => {

@@ -38,7 +38,16 @@ export const fetchProfileById = createAsyncThunk(
 export const createNewProfile = createAsyncThunk(
   'profiles/createNewProfile',
   async (data) => {
+    const { user, session, error } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+    })
+    console.log(user)
+    data.id = user.id
     const response = await supabase.from('profiles').insert([data])
+    if (response.error) {
+      alert(response.error.message)
+    }
     return response
   },
 )

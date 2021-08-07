@@ -6,6 +6,8 @@ import schedulesReducer from './schedulesSlice'
 import participantsReducer from './participantsSlice'
 import sectionsReducer from './sectionsSlice'
 import questionsReducer from './questionsSlice'
+import answersReducer from './answersSlice'
+
 export default configureStore({
   reducer: {
     organizations: organizationsReducer,
@@ -15,5 +17,6 @@ export default configureStore({
     participants: participantsReducer,
     sections: sectionsReducer,
     questions: questionsReducer,
+    answers: answersReducer,
   },
 })

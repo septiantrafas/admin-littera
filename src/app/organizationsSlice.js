@@ -67,7 +67,7 @@ export const updateOrganization = createAsyncThunk(
         pic_name: updatedData.pic_name,
       })
       .eq('id', updatedData.id)
-    // if (error) return error
+
     return data
   },
 )

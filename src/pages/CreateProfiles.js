@@ -46,12 +46,26 @@ function CreateProfiles() {
             <span>Name</span>
             <Input className="mt-1" defaultValue="" {...register('name')} />
           </Label>
+          <Label>
+            <span>Email</span>
+            <Input className="mt-1" defaultValue="" {...register('email')} />
+          </Label>
+          <Label>
+            <span>Password</span>
+
+            <Input
+              className="mt-1"
+              value={'password'}
+              defaultValue="password"
+              {...register('password')}
+            />
+          </Label>
           <Label className="mt-1">
             <span>Gender</span>
             <Select className="mt-1" defaultValue="" {...register('gender')}>
               <option disabled>select option</option>
-              <option>Female</option>
-              <option>Male</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
             </Select>
           </Label>
           <Label>
@@ -63,6 +77,7 @@ function CreateProfiles() {
             <Input
               className="mt-1"
               defaultValue=""
+              type="date"
               {...register('birth_date')}
             />
           </Label>
@@ -82,9 +97,9 @@ function CreateProfiles() {
             <span>Role</span>
             <Select className="mt-1" defaultValue="" {...register('role')}>
               <option disabled>select option</option>
-              <option>Participant</option>
-              <option>Proctor</option>
-              <option>Employee</option>
+              <option value="participant">Participant</option>
+              <option value="proctor">Proctor</option>
+              <option value="employee">Employee</option>
             </Select>
           </Label>
           <div className="flex justify-between my-4">

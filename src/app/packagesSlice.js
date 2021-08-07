@@ -64,7 +64,9 @@ export const updatePackage = createAsyncThunk(
         pic_name: updatedData.pic_name,
       })
       .eq('id', updatedData.id)
-    // if (error) return error
+    if (error) {
+      return error
+    }
     return data
   },
 )

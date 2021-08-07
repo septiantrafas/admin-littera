@@ -71,7 +71,7 @@ function CreateSchedules() {
             <Select
               className="mt-1"
               defaultValue=""
-              {...register('packages_id')}
+              {...register('package_id')}
             >
               <option disabled>select option</option>
               {packages.map((data) => {
@@ -84,7 +84,7 @@ function CreateSchedules() {
             <Select
               className="mt-1"
               defaultValue=""
-              {...register('organizations_id')}
+              {...register('organization_id')}
             >
               <option disabled>select option</option>
               {organizations.map((data) => {

@@ -2,10 +2,16 @@ import React, { useState } from 'react'
 
 import PageTitle from '../components/Typography/PageTitle'
 import CTA from '../components/CTA'
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui'
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from '@windmill/react-ui'
 
 function Modals() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(true)
 
   function openModal() {
     setIsModalOpen(true)
@@ -27,8 +33,8 @@ function Modals() {
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <ModalHeader>Modal header</ModalHeader>
         <ModalBody>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum et eligendi repudiandae
-          voluptatem tempore!
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum et
+          eligendi repudiandae voluptatem tempore!
         </ModalBody>
         <ModalFooter>
           {/* I don't like this approach. Consider passing a prop to ModalFooter

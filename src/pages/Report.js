@@ -8,30 +8,22 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
-  Badge,
-  Avatar,
   Button,
   Pagination,
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, DropdownIcon } from '../icons'
+import { DownloadIcon } from '../icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-// make a copy of the data, for the second table
+
 import { fetchAnswer } from '../app/answersSlice'
 import { fetchSchedule } from '../app/schedulesSlice'
-import { fetchQuestion, fetchQuestionByPackageId } from '../app/questionsSlice'
+import { fetchQuestion } from '../app/questionsSlice'
 import { fetchParticipant } from '../app/participantsSlice'
 import XLSX from 'xlsx'
 import { zeros } from 'mathjs'
+import { supabase } from '../supabase'
 
 function Report() {
   const dispatch = useDispatch()
-
-  const answerList = useSelector((state) => state.answers.answerList)
-  const participantList = useSelector(
-    (state) => state.participants.participantList,
-  )
-  const questionList = useSelector((state) => state.questions.questionList)
   const response = useSelector((state) => state.schedules.scheduleList)
   const answerListStatus = useSelector(
     (state) => state.answers.answerListStatus,
@@ -66,92 +58,57 @@ function Report() {
     )
   }, [pageTable, response])
 
-  const reportByScheduleId = (
-    schedule_id,
-    answerList,
-    questionList,
-    participantList,
-  ) => {
-    const participant = participantList
-    const question = questionList
-    const answer = answerList
-    console.log(participant)
-    console.log(question)
-    console.log(answer)
-    let array = zeros([participant.length, question.length + 1])
-    console.log(array)
+  const reportByScheduleId = async (data) => {
+    const questionByPackageId = await supabase
+      .from('questions')
+      .select('*')
+      .eq('package_id', data.package_id)
+    const participantByScheduleId = await supabase
+      .from('participants')
+      .select(`*,profiles:profile_id(name)`)
+      .eq('schedule_id', data.id)
+    const answersByScheduleId = await supabase
+      .from('answers')
+      .select('*')
+      .eq('schedule_id', data.id)
 
-    for (let index = 0; index < participant.length; index++) {
-      array[index][0] = participant[index].profile_id.id
+    let array = zeros([
+      participantByScheduleId.data.length,
+      questionByPackageId.data.length + 1,
+    ])
+
+    for (let index = 0; index < participantByScheduleId.data.length; index++) {
+      array[index][0] = participantByScheduleId.data[index].profiles.name
     }
 
-    for (let i = 0; i < participant.length; i++) {
-      for (let j = 1; j < question.length + 1; j++) {
-        array[i][j] = question[j - 1].id
+    for (let i = 0; i < participantByScheduleId.data.length; i++) {
+      for (let j = 1; j < questionByPackageId.data.length; j++) {
+        array[i][j] = questionByPackageId.data[j - 1].id
       }
     }
 
-    function filterAnswer(array_key, participant_id, question_id) {
-      if (
-        participant_id === array_key.participant_id &&
-        question_id === array_key.question_id
-      ) {
-        return array.answer.id
+    for (let i = 0; i < participantByScheduleId.data.length; i++) {
+      for (let j = 1; j < questionByPackageId.data.length; j++) {
+        array[i][j] = answersByScheduleId.data.find(
+          (data) =>
+            data.profile_id === participantByScheduleId.data[i].profile_id &&
+            data.question_id === questionByPackageId.data[j - 1].id,
+        ).value
       }
     }
 
-    for (let i = 0; i < participant.length; i++) {
-      for (let j = 1; j < question.length + 1; j++) {
-        array[i][j] = question[j - 1].number
-      }
+    var wb = XLSX.utils.book_new()
+    wb.Props = {
+      Title: 'SheetJS Tutorial',
+      Subject: 'Test',
+      Author: 'Littera',
+      CreatedDate: new Date(),
     }
-    console.log(array)
-
-    // let array = zeros([answer.length, 4])
-    // for (let i = 0; i < 90; i++) {
-    //   array[i][0] = answer[i].schedule_id
-    //   array[i][1] = answer[i].profile_id
-    //   array[i][2] = answer[i].question_id
-    //   array[i][3] = answer[i].value
-    // }
-    // console.log(array)
-
-    // for (let i = 0; i < participant.length; i++) {
-    //   for (let j = 0; j < question.length; j++) {
-    //     array[i][j + 1] = question[j].id
-    //   }
-    // }
-    // for (let i = 0; i < participant.length; i++) {
-    //   for (let j = 0; j < question.length; j++) {
-    //     array[i][j + 1] = question[j].id
-    //   }
-    // }
-    // for (let i = 0; i < participant.length; i++) {
-    //   for (let j = 0; j < question.length; j++) {
-    //     array[i][j + 1] = checkAnswer(answer, answer[i][0],array)
-    //   }
-    // }
-
-    // console.log(array)
-    // const data = answerList.filter((data) => data.schedule_id === id)
-    // console.log(data)
-    // const propertyValues = Object.values(data)
-    // let results = [['no', 'no peserta', 'nama', 'kelamin', 'tanggal lahir', '']]
-    // for (let index = 0; index < propertyValues.length; index++) {
-    //   results = results.concat([Object.values(propertyValues[index])])
-    // }
-    // var wb = XLSX.utils.book_new()
-    // wb.Props = {
-    //   Title: 'SheetJS Tutorial',
-    //   Subject: 'Test',
-    //   Author: 'Littera',
-    //   CreatedDate: new Date(),
-    // }
-    // wb.SheetNames.push('Test Sheet')
-    // var ws_data = array
-    // var ws = XLSX.utils.aoa_to_sheet(ws_data)
-    // wb.Sheets['Test Sheet'] = ws
-    // XLSX.writeFile(wb, 'sheetjs.xlsx')
+    wb.SheetNames.push('Test Sheet')
+    var ws_data = array
+    var ws = XLSX.utils.aoa_to_sheet(ws_data)
+    wb.Sheets['Test Sheet'] = ws
+    XLSX.writeFile(wb, 'sheetjs.xlsx')
   }
 
   return (
@@ -166,6 +123,7 @@ function Report() {
         <Table>
           <TableHeader>
             <tr>
+              <TableCell>Schedule Name</TableCell>
               <TableCell>Organization</TableCell>
               <TableCell>Exam date</TableCell>
               <TableCell>
@@ -176,6 +134,13 @@ function Report() {
           <TableBody>
             {dataTable.map((data, i) => (
               <TableRow key={i}>
+                <TableCell>
+                  <div className="flex items-center text-sm">
+                    <div>
+                      <p className="font-semibold">{data.name}</p>
+                    </div>
+                  </div>
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center text-sm">
                     <div>
@@ -192,18 +157,10 @@ function Report() {
                 <TableCell>
                   <div className="flex justify-center">
                     <Button
-                      onClick={() =>
-                        reportByScheduleId(
-                          data.id,
-                          answerList,
-                          questionList,
-                          participantList,
-                        )
-                      }
+                      onClick={() => reportByScheduleId(data)}
                       size="icon"
-                      aria-label="Edit"
                     >
-                      <DropdownIcon className="w-5 h-5" aria-hidden="true" />
+                      <DownloadIcon className="w-5 h-5" />
                     </Button>
                   </div>
                 </TableCell>

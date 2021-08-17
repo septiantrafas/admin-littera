@@ -1,6 +1,5 @@
 import { lazy } from 'react'
 
-const Dashboard = lazy(() => import('../pages/Dashboard'))
 const Forms = lazy(() => import('../pages/Forms'))
 const Exam = lazy(() => import('../pages/Exam'))
 const Organizations = lazy(() => import('../pages/Organizations'))
@@ -19,74 +18,92 @@ const routes = [
   {
     path: '/exam',
     component: Exam,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/exam/create-schedule',
     component: CreateSchedule,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/exam/edit-schedule/:id',
     component: CreateSchedule,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/organizations',
     component: Organizations,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/organizations/create-organization',
     component: CreateOrganization,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/organizations/edit-organization/:id',
     component: CreateOrganization,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/organizations/create-participant',
     component: CreateParticipant,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/organizations/edit-participant/:id',
     component: CreateParticipant,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/qbank',
     component: QBank,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/qbank/create-section',
     component: CreateSection,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/qbank/edit-section/:id',
     component: CreateSection,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/qbank/create-question',
     component: CreateQuestion,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/qbank/edit-question/:id',
     component: EditQuestions,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/report',
     component: Report,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/profiles',
     component: Profiles,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/profiles/create-profile',
     component: CreateProfiles,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/profiles/edit-profile',
     component: CreateProfiles,
+    roles: ['supabase_admin', 'proctor'],
   },
   {
     path: '/forms',
     component: Forms,
+    roles: ['supabase_admin', 'proctor'],
   },
 ]
 

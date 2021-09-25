@@ -11,9 +11,9 @@ function Icon({ icon, ...props }) {
 }
 
 function SidebarContent() {
-  const { user } = useAuth()
-  console.log(roles.find((data) => data.role === user?.role ?? ''))
-  const routes = roles.find((data) => data.role === user?.role ?? '')
+  const { userRole } = useAuth();
+  console.log(userRole);
+  const routes = roles.find((data) => data.role === userRole?.role ?? "");
   return (
     <div className="py-4 text-gray-500 dark:text-gray-400">
       <div className="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200">

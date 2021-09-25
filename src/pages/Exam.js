@@ -59,6 +59,7 @@ function ParticipantTable() {
             <tr>
               <TableCell>Schedule date</TableCell>
               <TableCell>Profile name</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Actions</TableCell>
             </tr>
           </TableHeader>
@@ -69,14 +70,19 @@ function ParticipantTable() {
                   <div className="flex items-center text-sm">
                     <div>
                       <p className="font-semibold">
-                        {user.schedules.exam_date}
+                        {user.schedule_id.exam_date}
                       </p>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">
-                    {user.profiles.name}
+                    {user.profile_id.name}
+                  </p>
+                </TableCell>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {user.status}
                   </p>
                 </TableCell>
                 <TableCell>

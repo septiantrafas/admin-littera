@@ -1,6 +1,6 @@
 const roles = [
   {
-    role: 'supabase_admin',
+    role: 'super_admin',
     routes: [
       {
         path: '/app/organizations',

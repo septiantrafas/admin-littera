@@ -51,6 +51,7 @@ function CreateSchedules() {
   const onSubmit = async (data) => {
     if (canSave)
       try {
+        console.log(data)
         const resultAction = await dispatch(createNewSchedule(data))
         unwrapResult(resultAction)
       } catch (e) {
@@ -88,7 +89,7 @@ function CreateSchedules() {
             >
               <option disabled>select option</option>
               {organizations.map((data) => {
-                return <option value={data.id}>{data.name}</option>
+                return <option value={data.id}>{data.name} - {data.id}</option>
               })}
             </Select>
           </Label>

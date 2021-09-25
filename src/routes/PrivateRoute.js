@@ -1,24 +1,23 @@
-import React from 'react'
-
-import { Route, Redirect } from 'react-router-dom'
-import { useAuth } from '../contexts/Auth'
+import React, { useEffect, useState } from "react";
+import { Route, Redirect } from "react-router-dom";
+import { useAuth } from "../contexts/Auth";
 
 export function PrivateRoute({ component: Component, roles, ...rest }) {
-  const { user } = useAuth()
-  const temp = user?.role ?? 'supabase_admin'
+  const { user, userRole } = useAuth();
+  let rctUser = userRole?.role ?? "super_admin";
 
   return (
     <Route
       {...rest}
       render={(props) => {
         if (!user) {
-          return <Redirect to="/login" />
+          return <Redirect to="/login" />;
         }
-        if (roles && roles.indexOf(temp) === -1) {
-          return <Redirect to="/app" />
-        }
-        return <Component {...props} />
+        // if (roles && roles.indexOf(rctUser) === -1) {
+        //   return <Redirect to="/app" />;
+        // }
+        return <Component {...props} />;
       }}
     />
-  )
+  );
 }

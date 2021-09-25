@@ -96,6 +96,7 @@ function Report() {
         ).value
       }
     }
+    console.log(array)
 
     var wb = XLSX.utils.book_new()
     wb.Props = {

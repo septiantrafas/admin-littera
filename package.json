@@ -28,9 +28,11 @@
     "@testing-library/user-event": "7.2.1",
     "@tinymce/tinymce-react": "^3.12.3",
     "@windmill/react-ui": "0.3.1",
+    "ansi-html": "^0.0.7",
     "chart.js": "^3.4.1",
     "classnames": "2.2.6",
     "faker": "4.1.0",
+    "immer": "^8.0.1",
     "lossless-json": "^1.0.4",
     "mathjs": "^9.4.4",
     "number-to-letter": "^1.0.1",
@@ -48,6 +50,9 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "^4.0.3",
     "react-transition-group": "4.4.1",
+    "tmpl": "^1.0.5",
+    "trim-off-newlines": "^1.0.3",
+    "url-parse": "^1.5.3",
     "xlsx": "^0.17.0"
   },
   "devDependencies": {

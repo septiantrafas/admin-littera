@@ -58,45 +58,78 @@ function Report() {
     )
   }, [pageTable, response])
 
-  const reportByScheduleId = async (data) => {
-    const questionByPackageId = await supabase
-      .from('questions')
-      .select('*')
-      .eq('package_id', data.package_id)
-    const participantByScheduleId = await supabase
-      .from('participants')
-      .select(`*,profiles:profile_id(name)`)
-      .eq('schedule_id', data.id)
-    const answersByScheduleId = await supabase
-      .from('answers')
-      .select('*')
-      .eq('schedule_id', data.id)
+  const reportByScheduleId = async (id, package_id) => {
+  
+  let answers = await supabase
+  .from('answers')
+  .select('*').eq('schedule_id',id)
+  answers = answers.data
 
-    let array = zeros([
-      participantByScheduleId.data.length,
-      questionByPackageId.data.length + 1,
-    ])
+  let questions = await supabase
+  .from('questions')
+  .select(`*,sections(number)`)
+  .eq('package_id',package_id)
+  questions = questions.data
+  questions = questions.sort(function(x,y){
+    return x.number - y.number
+  } ).sort(function(x,y){
+    return x.sections.number - y.sections.number
+  } )
+  console.log(questions)
 
-    for (let index = 0; index < participantByScheduleId.data.length; index++) {
-      array[index][0] = participantByScheduleId.data[index].profiles.name
+  let participants = await supabase
+  .from('participants')
+  .select(`id,profiles(name)`).eq('schedule_id',id)
+  participants = participants.data
+
+  let array = zeros(participants.length+1,questions.length+1)
+  let array2 = zeros(participants.length+1,questions.length+1)
+  array = array._data
+  array2 = array2._data
+
+  array[0][0] = 'participant/question'
+  array2[0][0] = 'participant/question'
+
+  for (let i = 0; i < questions.length; i++) {
+    array[0][i+1] ="S"+String(questions[i].sections.number) +"Q"+ String(questions[i].number) 
+    array2[0][i+1] ="S"+String(questions[i].sections.number) +"Q"+ String(questions[i].number) 
+  }
+
+  for (let i = 0; i < participants.length; i++) {
+    for (let j = 0; j < questions.length; j++) {
+      array[i+1][0] = participants[i].profiles.name
+      array2[i+1][0] = participants[i].profiles.name
+      array[i+1][j+1] = answers.find((data)=>data.participant_id === participants[i].id && data.question_id === questions[j].id).value
     }
+  }
 
-    for (let i = 0; i < participantByScheduleId.data.length; i++) {
-      for (let j = 1; j < questionByPackageId.data.length; j++) {
-        array[i][j] = questionByPackageId.data[j - 1].id
+  for (let i = 0; i < participants.length; i++) {
+    for (let j = 0; j < questions.length; j++) {
+      switch (array[i+1][j+1]) {
+        case "0":
+          array2[i+1][j+1] = 'null'
+          break;
+        case "1":
+          array2[i+1][j+1] = 'A'
+          break;
+        case "2":
+          array2[i+1][j+1] = 'B'
+          break;
+        case "3":
+          array2[i+1][j+1] = 'C'
+          break;
+        case "4":
+          array2[i+1][j+1] = 'D'
+          break;  
+        case "5":
+          array2[i+1][j+1] = 'E'
+          break;
+        default:
+          break;
       }
     }
-
-    for (let i = 0; i < participantByScheduleId.data.length; i++) {
-      for (let j = 1; j < questionByPackageId.data.length; j++) {
-        array[i][j] = answersByScheduleId.data.find(
-          (data) =>
-            data.profile_id === participantByScheduleId.data[i].profile_id &&
-            data.question_id === questionByPackageId.data[j - 1].id,
-        ).value
-      }
-    }
-    console.log(array)
+  }
+  
 
     var wb = XLSX.utils.book_new()
     wb.Props = {
@@ -105,10 +138,14 @@ function Report() {
       Author: 'Littera',
       CreatedDate: new Date(),
     }
-    wb.SheetNames.push('Test Sheet')
+    wb.SheetNames.push('Sheet A')
+    wb.SheetNames.push('Sheet B')
     var ws_data = array
     var ws = XLSX.utils.aoa_to_sheet(ws_data)
-    wb.Sheets['Test Sheet'] = ws
+    var ws_data2 = array2
+    var ws2 = XLSX.utils.aoa_to_sheet(ws_data2)
+    wb.Sheets['Sheet A'] = ws
+    wb.Sheets['Sheet B'] = ws2
     XLSX.writeFile(wb, 'sheetjs.xlsx')
   }
 
@@ -158,7 +195,7 @@ function Report() {
                 <TableCell>
                   <div className="flex justify-center">
                     <Button
-                      onClick={() => reportByScheduleId(data)}
+                      onClick={() => reportByScheduleId(data.id, data.package_id)}
                       size="icon"
                     >
                       <DownloadIcon className="w-5 h-5" />

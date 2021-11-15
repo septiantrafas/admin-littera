@@ -19,9 +19,9 @@ import { EditIcon, TrashIcon } from '../icons'
 import { Link } from 'react-router-dom'
 import CreateParticipants from './CreateParticipants'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteSchedule, fetchSchedule } from '../app/schedulesSlice'
-import { deleteParticipant, fetchParticipant } from '../app/participantsSlice'
-// make a copy of the data, for the second table
+import { countSchedule, deleteSchedule, fetchSchedule } from '../app/schedulesSlice'
+import { countParticipant, deleteParticipant, fetchParticipant } from '../app/participantsSlice'
+
 
 function ParticipantTable() {
   const dispatch = useDispatch()
@@ -120,8 +120,12 @@ function ParticipantTable() {
 }
 
 function Exam() {
+  const dispatch = useDispatch()
   const [link, setLink] = useState('schedules')
   const [newPartBox, setNewPartBox] = useState(false)
+  const totalSchedule = useSelector((state)=>state.schedules.totalSchedule)
+  const totalScheduleStatus = useSelector((state)=>state.schedules.totalScheduleStatus)
+  const totalParticipant = useSelector((state)=>state.participants.totalParticipant)
 
   const buttonSch = (
     <Button size="small" tag={Link} to="/app/exam/create-schedule">
@@ -139,6 +143,13 @@ function Exam() {
       + new participant
     </Button>
   )
+
+  useEffect(() => {
+    if (totalScheduleStatus === 'idle') {
+      dispatch(countSchedule())
+      dispatch(countParticipant())
+    }
+  }, [totalScheduleStatus, dispatch])
 
   return (
     <>
@@ -159,7 +170,7 @@ function Exam() {
           }}
           className="cursor-pointer"
         >
-          <InfoCard title="Schedule" value="10">
+          <InfoCard title="Schedule" value={totalSchedule}>
             <RoundIcon
               icon={PeopleIcon}
               iconColorClass="text-blue-500 dark:text-blue-100"
@@ -174,7 +185,7 @@ function Exam() {
           }}
           className="cursor-pointer"
         >
-          <InfoCard title="Participants" value="1000">
+          <InfoCard title="Participants" value={totalParticipant}>
             <RoundIcon
               icon={PeopleIcon}
               iconColorClass="text-orange-500 dark:text-orange-100"
@@ -203,6 +214,7 @@ function ScheduleTable() {
   const scheduleListStatus = useSelector(
     (state) => state.schedules.scheduleListStatus,
   )
+  
 
   const [pageTable, setPageTable] = useState(1)
   const [dataTable, setDataTable] = useState([])

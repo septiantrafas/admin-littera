@@ -14,10 +14,11 @@ import {
   Pagination,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../icons'
-
+import toast, { Toaster, useToaster } from 'react-hot-toast'
 import SectionTitle from '../components/Typography/SectionTitle'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  clearOrganizationDeleteStatus,
   deleteOrganization,
   fetchOrganization,
 } from '../app/organizationsSlice'
@@ -35,6 +36,7 @@ function Organizations() {
   const organizationListStatus = useSelector(
     (state) => state.organizations.organizationListStatus,
   )
+  const organizationDeleteStatus = useSelector((state)=>state.organizations.organizationDeleteStatus)
 
   useEffect(() => {
     if (organizationListStatus === 'idle') {
@@ -55,6 +57,9 @@ function Organizations() {
 
   function removeOrganization(id) {
     dispatch(deleteOrganization(id))
+    if (organizationDeleteStatus==='succeeded'){
+      toast.success('deleted!')}
+    dispatch(clearOrganizationDeleteStatus())
   }
 
   useEffect(() => {
@@ -85,6 +90,35 @@ function Organizations() {
           </svg>
         </span>
       </div> */}
+       <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          className: '',
+          style: {
+            marginTop: '90px',
+            marginRight: '40px',
+            background: '#363636',
+            color: '#fff',
+            zIndex: 1,
+          },
+          duration: 5000,
+          success: {
+            duration: 1000,
+            theme: {
+              primary: 'green',
+              secondary: 'black',
+            },
+          },
+          error: {
+            duration: 1000,
+            theme: {
+              primary: 'green',
+              secondary: 'black',
+            },
+          },
+        }}
+      />
       <PageTitle>
         <div className="flex justify-between">
           <div>Organizations</div>

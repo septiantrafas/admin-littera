@@ -17,6 +17,8 @@ const initialState = {
   participantUpdate: [],
   participantUpdateStatus: 'idle',
   participantUpdateError: null,
+  totalParticipant: 0,
+  totalParticipantStatus:'idle',
 }
 
 export const fetchParticipant = createAsyncThunk(
@@ -28,6 +30,17 @@ export const fetchParticipant = createAsyncThunk(
     return response
   },
 )
+
+export const countParticipant = createAsyncThunk(
+  'participants/countParticipant',
+  async () => {
+    const { count } = await supabase
+      .from('participants')
+      .select(`id`,{count:'exact'})
+    return count
+  },
+)
+
 
 export const fetchParticipantById = createAsyncThunk(
   'participants/fetchParticipantById',
@@ -90,8 +103,22 @@ const participantsSlice = createSlice({
     clearCreateParticipantStatus: (state) => {
       state.createParticipantStatus = 'idle'
     },
+    clearTotalParticipantStatus:(state)=>{
+      state.totalParticipantStatus = 'idle'
+    }
   },
   extraReducers: {
+    [countParticipant.pending]:(state)=>{
+      state.totalParticipantStatus = 'loading'
+    },
+    [countParticipant.fulfilled]:(state,action)=>{
+      state.totalParticipant = action.payload
+      state.totalParticipantStatus = 'succeeded'
+    },
+    [countParticipant.rejected]:(state)=>{
+      state.totalParticipantStatus = 'failed'
+    },
+    
     [fetchParticipant.pending]: (state) => {
       state.participantListStatus = 'loading'
     },

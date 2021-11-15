@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
+import { act } from 'react-dom/test-utils'
 import { supabase } from '../supabase'
 
 const initialState = {
@@ -17,6 +18,8 @@ const initialState = {
   scheduleUpdate: [],
   scheduleUpdateStatus: 'idle',
   scheduleUpdateError: null,
+  totalSchedule:0,
+  totalScheduleStatus:'idle',
 }
 
 export const fetchSchedule = createAsyncThunk(
@@ -26,6 +29,16 @@ export const fetchSchedule = createAsyncThunk(
       .from('schedules')
       .select(`*,packages:package_id(*),organizations:organization_id(*)`)
     return response
+  },
+)
+
+export const countSchedule = createAsyncThunk(
+  'schedules/countSchedule',
+  async () => {
+    const { count } = await supabase
+      .from('schedules')
+      .select(`id`,{count:'exact'})
+    return count
   },
 )
 
@@ -87,8 +100,21 @@ const schedulesSlice = createSlice({
     clearCreateScheduleStatus: (state) => {
       state.createScheduleStatus = 'idle'
     },
+    clearTotalSchedule:(state)=>{
+      state.totalScheduleStatus = 'idle'
+    }
   },
   extraReducers: {
+    [countSchedule.pending]:(state,action)=>{
+      state.totalScheduleStatus = 'loading'
+    },
+    [countSchedule.fulfilled]:(state,action)=>{
+      state.totalScheduleStatus = 'succeeded'
+      state.totalSchedule = action.payload
+    },
+    [countSchedule.rejected]: (state, action) => {
+      state.totalScheduleStatus = 'failed'
+    },
     [fetchSchedule.pending]: (state) => {
       state.scheduleListStatus = 'loading'
     },

@@ -54,7 +54,7 @@ function CreateSections() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Label className="mt-1">
             <span>Package</span>
-            <Select className="mt-1" {...register('packages_id')}>
+            <Select className="mt-1" {...register('package_id')}>
               <option disabled>select option</option>
               {packages.map((data) => {
                 return <option value={data.id}>{data.name}</option>
@@ -67,7 +67,7 @@ function CreateSections() {
           </Label>
           <Label>
             <span>Titles</span>
-            <Input className="mt-1" {...register('title')} />
+            <Input className="mt-1" {...register('titles')} />
           </Label>
           <Label>
             <span>Context</span>
@@ -99,21 +99,10 @@ function CreateSections() {
             />
           </Label>
           <Label>
-            <span>Start time</span>
-            <Input
-              type="datetime-local"
-              className="mt-1"
-              {...register('start_time')}
-            />
+            <span>Duration</span>
+            <Input type="number" className="mt-1" {...register('duration')} />
           </Label>
-          <Label>
-            <span>End time</span>
-            <Input
-              type="datetime-local"
-              className="mt-1"
-              {...register('end_time')}
-            />
-          </Label>
+        
           <div className="flex justify-between my-4">
             <div>
               <Button tag={Link} to="/app/qbank" size="small">

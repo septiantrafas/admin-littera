@@ -59,12 +59,13 @@ function Report() {
   }, [pageTable, response])
 
   const reportByScheduleId = async (id, package_id) => {
-  
+  console.log(id)
+  console.log(package_id)
   let answers = await supabase
   .from('answers')
   .select('*').eq('schedule_id',id)
   answers = answers.data
-
+  console.log(answers)
   let questions = await supabase
   .from('questions')
   .select(`*,sections(number)`)
@@ -99,7 +100,8 @@ function Report() {
     for (let j = 0; j < questions.length; j++) {
       array[i+1][0] = participants[i].profiles.name
       array2[i+1][0] = participants[i].profiles.name
-      array[i+1][j+1] = answers.find((data)=>data.participant_id === participants[i].id && data.question_id === questions[j].id).value
+      array[i+1][j+1] = answers.find((data)=>data.participant_id === participants[i].id && data.question_id === questions[j].id)?.value?? 'null'
+      console.log(answers.find((data)=>data.participant_id === participants[i].id && data.question_id === questions[j].id))
     }
   }
 

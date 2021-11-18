@@ -157,11 +157,9 @@ function CreateQuestions() {
             <Label className="mt-1">
               <span>Number</span>
               <Input
-                readOnly
                 type="number"
                 className="mt-1"
                 defaultValue=""
-                value={number}
                 {...register('number')}
               />
             </Label>

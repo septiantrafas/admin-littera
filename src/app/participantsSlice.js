@@ -87,6 +87,48 @@ export const updateParticipant = createAsyncThunk(
   },
 )
 
+export const updateStatusOnline = createAsyncThunk(
+  'participants/updateStatusOnline',
+  async (updatedData) => {
+    const { data, error } = await supabase
+      .from('participants')
+      .update({
+       status: 'online'
+      })
+      .eq('id', updatedData)
+    return data
+  },
+)
+
+export const updateStatusBanned = createAsyncThunk(
+  'participants/updateStatusBanned',
+  async (updatedData) => {
+    const { data, error } = await supabase
+      .from('participants')
+      .update({
+       status: 'banned'
+      })
+      .eq('id', updatedData)
+    return data
+  },
+)
+
+export const updateStatusDone = createAsyncThunk(
+  'participants/updateStatusDone',
+  async (updatedData) => {
+    const { data, error } = await supabase
+      .from('participants')
+      .update({
+       status: 'done'
+      })
+      .eq('id', updatedData)
+    return data
+  },
+)
+
+
+
+
 const participantsSlice = createSlice({
   name: 'participants',
   initialState,

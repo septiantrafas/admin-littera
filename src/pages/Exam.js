@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PageTitle from '../components/Typography/PageTitle'
 import InfoCard from '../components/Cards/InfoCard'
 import RoundIcon from '../components/RoundIcon'
-import { PeopleIcon } from '../icons'
+import { ForbiddenIcon, PeopleIcon, SunIcon } from '../icons'
 import SectionTitle from '../components/Typography/SectionTitle'
 import {
   Table,
@@ -20,7 +20,7 @@ import { Link } from 'react-router-dom'
 import CreateParticipants from './CreateParticipants'
 import { useDispatch, useSelector } from 'react-redux'
 import { countSchedule, deleteSchedule, fetchSchedule } from '../app/schedulesSlice'
-import { countParticipant, deleteParticipant, fetchParticipant } from '../app/participantsSlice'
+import { countParticipant, deleteParticipant, fetchParticipant, updateStatusBanned, updateStatusOnline } from '../app/participantsSlice'
 
 
 function ParticipantTable() {
@@ -87,8 +87,11 @@ function ParticipantTable() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
-                    <Button layout="link" size="icon" aria-label="Edit">
-                      <EditIcon className="w-5 h-5" aria-hidden="true" />
+                    <Button onClick={()=>{dispatch(updateStatusOnline(user.id))}} layout="link" size="icon" aria-label="Edit">
+                      <SunIcon className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+                    <Button onClick={()=>{dispatch(updateStatusBanned(user.id))}} layout="link" size="icon" aria-label="Edit">
+                      <ForbiddenIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                     <Button
                       onClick={() => {

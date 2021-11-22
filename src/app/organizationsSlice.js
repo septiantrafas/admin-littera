@@ -1,64 +1,64 @@
-import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
-import { supabase } from '../supabase'
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import { supabase } from "../supabase";
 
 const initialState = {
   organizationList: [],
-  organizationListStatus: 'idle',
+  organizationListStatus: "idle",
   organizationListError: null,
   organizationById: [],
-  organizationByIdStatus: 'idle',
+  organizationByIdStatus: "idle",
   organizationByIdError: null,
   createOrganization: [],
-  createOrganizationStatus: 'idle',
+  createOrganizationStatus: "idle",
   createOrganizationError: null,
   organizationDelete: [],
-  organizationDeleteStatus: 'idle',
+  organizationDeleteStatus: "idle",
   organizationDeleteError: null,
   organizationUpdate: [],
-  organizationUpdateStatus: 'idle',
+  organizationUpdateStatus: "idle",
   organizationUpdateError: null,
-}
+};
 
 export const fetchOrganization = createAsyncThunk(
-  'organizations/fetchOrganization',
+  "organizations/fetchOrganization",
   async () => {
-    const response = await supabase.from('organizations').select()
-    return response
-  },
-)
+    const response = await supabase.from("organizations").select();
+    return response;
+  }
+);
 
 export const fetchOrganizationById = createAsyncThunk(
-  'organizations/fetchOrganizationById',
+  "organizations/fetchOrganizationById",
   async (id) => {
     const response = await supabase
-      .from('organizations')
-      .select('*')
-      .eq('id', id)
-    return response
-  },
-)
+      .from("organizations")
+      .select("*")
+      .eq("id", id);
+    return response;
+  }
+);
 
 export const createNewOrganization = createAsyncThunk(
-  'organizations/createNewOrganization',
+  "organizations/createNewOrganization",
   async (data) => {
-    const response = await supabase.from('organizations').insert([data])
-    return response
-  },
-)
+    const response = await supabase.from("organizations").insert([data]);
+    return response;
+  }
+);
 
 export const deleteOrganization = createAsyncThunk(
-  'organizations/deleteOrganization',
+  "organizations/deleteOrganization",
   async (id) => {
-    await supabase.from('organizations').delete().match({ id: id })
-    return id
-  },
-)
+    await supabase.from("organizations").delete().match({ id: id });
+    return id;
+  }
+);
 
 export const updateOrganization = createAsyncThunk(
-  'organizations/updateOrganization',
+  "organizations/updateOrganization",
   async (updatedData) => {
     const { data, error } = await supabase
-      .from('organizations')
+      .from("organizations")
       .update({
         address: updatedData.address,
         email: updatedData.email,
@@ -66,101 +66,103 @@ export const updateOrganization = createAsyncThunk(
         phone: updatedData.phone,
         pic_name: updatedData.pic_name,
       })
-      .eq('id', updatedData.id)
+      .eq("id", updatedData.id);
 
-    return data
-  },
-)
+    return data;
+  }
+);
 
 const organizationsSlice = createSlice({
-  name: 'organizations',
+  name: "organizations",
   initialState,
   reducers: {
+    clearOrganizationListStatus: (state) => {
+      state.organizationListStatus = "idle";
+    },
     clearOrganizationByIdData: (state) => {
-      state.organizationById = []
+      state.organizationById = [];
     },
     clearOrganizationByIdStatus: (state) => {
-      state.organizationByIdStatus = 'idle'
+      state.organizationByIdStatus = "idle";
     },
     clearOrganizationDeleteStatus: (state) => {
-      state.organizationDeleteStatus = 'idle'
+      state.organizationDeleteStatus = "idle";
     },
     clearCreateOrganizationStatus: (state) => {
-      state.createOrganizationStatus = 'idle'
+      state.createOrganizationStatus = "idle";
     },
   },
   extraReducers: {
     [fetchOrganization.pending]: (state) => {
-      state.organizationListStatus = 'loading'
+      state.organizationListStatus = "loading";
     },
     [fetchOrganization.fulfilled]: (state, action) => {
-      state.organizationListStatus = 'succeeded'
-      state.organizationList = state.organizationList.concat(
-        action.payload.data,
-      )
+      state.organizationListStatus = "succeeded";
+      state.organizationList = action.payload.data;
     },
     [fetchOrganization.rejected]: (state, action) => {
-      state.organizationListStatus = 'failed'
-      state.organizationListError = action.error.message
+      state.organizationListStatus = "failed";
+      state.organizationListError = action.error.message;
     },
     [fetchOrganizationById.pending]: (state) => {
-      state.organizationByIdStatus = 'loading'
+      state.organizationByIdStatus = "loading";
     },
     [fetchOrganizationById.fulfilled]: (state, action) => {
-      state.organizationByIdStatus = 'succeeded'
-      state.organizationById = action.payload.data[0]
+      state.organizationByIdStatus = "succeeded";
+      state.organizationById = action.payload.data[0];
     },
     [fetchOrganizationById.rejected]: (state, action) => {
-      state.organizationByIdStatus = 'failed'
-      state.organizationByIdError = action.error.message
+      state.organizationByIdStatus = "failed";
+      state.organizationByIdError = action.error.message;
     },
     [createNewOrganization.pending]: (state) => {
-      state.createOrganizationStatus = 'loading'
+      state.createOrganizationStatus = "loading";
     },
     [createNewOrganization.fulfilled]: (state, action) => {
-      state.createOrganizationStatus = 'succeeded'
+      state.createOrganizationStatus = "succeeded";
       state.organizationList = state.organizationList.concat(
-        action.payload.data[0],
-      )
+        action.payload.data[0]
+      );
     },
     [createNewOrganization.rejected]: (state, action) => {
-      state.createOrganizationStatus = 'failed'
-      state.createOrganizationError = action.error.message
+      state.createOrganizationStatus = "failed";
+      state.createOrganizationError = action.error.message;
     },
     [deleteOrganization.pending]: (state) => {
-      state.organizationDeleteStatus = 'loading'
+      state.organizationDeleteStatus = "loading";
     },
     [deleteOrganization.fulfilled]: (state, action) => {
-      state.organizationDeleteStatus = 'succeeded'
-      state.organizationDelete = action.payload.data
-      const array = current(state.organizationList)
+      state.organizationDeleteStatus = "succeeded";
+      state.organizationDelete = action.payload.data;
+      const array = current(state.organizationList);
       // eslint-disable-next-line eqeqeq
-      const temp = array.filter((element) => element.id != action.payload)
-      state.organizationList = temp
+      const temp = array.filter((element) => element.id != action.payload);
+      state.organizationList = temp;
     },
     [deleteOrganization.rejected]: (state, action) => {
-      state.organizationDeleteStatus = 'failed'
-      state.organizationDeleteError = action.error.message
+      state.organizationDeleteStatus = "failed";
+      state.organizationDeleteError = action.error.message;
     },
     [updateOrganization.pending]: (state) => {
-      state.organizationUpdateStatus = 'loading'
+      state.organizationUpdateStatus = "loading";
     },
     [updateOrganization.fulfilled]: (state, action) => {
-      state.organizationUpdateStatus = 'succeeded'
-      state.organizationUpdate = action.payload.data
+      state.organizationUpdateStatus = "succeeded";
+      state.organizationUpdate = action.payload.data;
     },
     [updateOrganization.rejected]: (state, action) => {
-      state.organizationUpdateStatus = 'failed'
-      state.organizationUpdateError = action.error.message
+      state.organizationUpdateStatus = "failed";
+      state.organizationUpdateError = action.error.message;
     },
   },
-})
+});
 
 export const {
+  clearOrganizationListStatus,
   clearOrganizationByIdData,
   clearOrganizationByIdStatus,
   clearOrganizationDeleteStatus,
   clearCreateOrganizationStatus,
-} = organizationsSlice.actions
+} = organizationsSlice.actions;
 
-export default organizationsSlice.reducer
+export default organizationsSlice.reducer;

@@ -1,24 +1,34 @@
-import React, { useState } from 'react'
-import PageTitle from '../components/Typography/PageTitle'
-import { Input, HelperText, Label, Button } from '@windmill/react-ui'
-import { Link } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from "react";
+import PageTitle from "../components/Typography/PageTitle";
+import { Input, HelperText, Label, Button } from "@windmill/react-ui";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createNewOrganization,
   clearCreateOrganizationStatus,
-} from '../app/organizationsSlice'
-import { unwrapResult } from '@reduxjs/toolkit'
-import toast, { Toaster, useToaster } from 'react-hot-toast'
-import { FulfillingBouncingCircleSpinner } from 'react-epic-spinners'
+  clearOrganizationListStatus,
+} from "../app/organizationsSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import toast, { Toaster } from "react-hot-toast";
+import { FulfillingBouncingCircleSpinner } from "react-epic-spinners";
 
 function CreateOrganizations() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const organizationListStatus = useSelector(
+    (state) => state.organizations.organizationListStatus
+  );
+  useEffect(() => {
+    if (organizationListStatus === "succeeded") {
+      dispatch(clearOrganizationListStatus());
+    }
+  }, [organizationListStatus, dispatch]);
 
   const createOrganizationStatus = useSelector(
-    (state) => state.organizations.createOrganizationStatus,
-  )
-  const canSave = createOrganizationStatus === 'idle'
+    (state) => state.organizations.createOrganizationStatus
+  );
+
+  const canSave = createOrganizationStatus === "idle";
 
   const {
     register,
@@ -29,42 +39,42 @@ function CreateOrganizations() {
     formState: { isSubmitSuccessful },
   } = useForm({
     defaultValues: {
-      name: '',
-      address: '',
-      pic_name: '',
-      phone: '',
-      email: '',
-      total_participant: '',
+      name: "",
+      address: "",
+      pic_name: "",
+      phone: "",
+      email: "",
+      total_participant: "",
     },
-  })
+  });
 
   const onSubmit = async (data) => {
     if (canSave)
       try {
-        const resultAction = await dispatch(createNewOrganization(data))
-        unwrapResult(resultAction)
+        const resultAction = await dispatch(createNewOrganization(data));
+        unwrapResult(resultAction);
         if (resultAction.payload.error === null) {
-          toast.success('Berhasil menambahkan data!')
+          toast.success("Berhasil menambahkan data!");
         }
       } catch (error) {
-        if (error) throw toast.error('Gagal menambahkan data!')
+        if (error) throw toast.error("Gagal menambahkan data!");
       } finally {
-        dispatch(clearCreateOrganizationStatus())
+        dispatch(clearCreateOrganizationStatus());
       }
-  }
+  };
 
   React.useEffect(() => {
     if (formState.isSubmitSuccessful) {
       reset({
-        name: '',
-        address: '',
-        pic_name: '',
-        phone: '',
-        email: '',
-        total_participant: '',
-      })
+        name: "",
+        address: "",
+        pic_name: "",
+        phone: "",
+        email: "",
+        total_participant: "",
+      });
     }
-  }, [formState, reset])
+  }, [formState, reset]);
 
   return (
     <>
@@ -72,27 +82,27 @@ function CreateOrganizations() {
         position="top-right"
         reverseOrder={false}
         toastOptions={{
-          className: '',
+          className: "",
           style: {
-            marginTop: '90px',
-            marginRight: '40px',
-            background: '#363636',
-            color: '#fff',
+            marginTop: "90px",
+            marginRight: "40px",
+            background: "#363636",
+            color: "#fff",
             zIndex: 1,
           },
           duration: 5000,
           success: {
             duration: 1000,
             theme: {
-              primary: 'green',
-              secondary: 'black',
+              primary: "green",
+              secondary: "black",
             },
           },
           error: {
             duration: 1000,
             theme: {
-              primary: 'green',
-              secondary: 'black',
+              primary: "green",
+              secondary: "black",
             },
           },
         }}
@@ -107,9 +117,9 @@ function CreateOrganizations() {
               <Input
                 className="mt-1"
                 defaultValue=""
-                {...register('name', { required: true })}
+                {...register("name", { required: true })}
               />
-              {errors.name?.type === 'required' && (
+              {errors.name?.type === "required" && (
                 <HelperText valid={false}>Name is required</HelperText>
               )}
             </Label>
@@ -118,9 +128,9 @@ function CreateOrganizations() {
               <Input
                 className="mt-1"
                 defaultValue=""
-                {...register('address', { required: true })}
+                {...register("address", { required: true })}
               />
-              {errors.address?.type === 'required' && (
+              {errors.address?.type === "required" && (
                 <HelperText valid={false}>Address is required</HelperText>
               )}
             </Label>
@@ -129,9 +139,9 @@ function CreateOrganizations() {
               <Input
                 className="mt-1"
                 defaultValue=""
-                {...register('pic_name', { required: true })}
+                {...register("pic_name", { required: true })}
               />
-              {errors.pic_name?.type === 'required' && (
+              {errors.pic_name?.type === "required" && (
                 <HelperText valid={false}>PIC name is required</HelperText>
               )}
             </Label>
@@ -140,9 +150,9 @@ function CreateOrganizations() {
               <Input
                 className="mt-1"
                 defaultValue=""
-                {...register('phone', { required: true })}
+                {...register("phone", { required: true })}
               />
-              {errors.phone?.type === 'required' && (
+              {errors.phone?.type === "required" && (
                 <HelperText valid={false}>Phone is required</HelperText>
               )}
             </Label>
@@ -151,9 +161,9 @@ function CreateOrganizations() {
               <Input
                 className="mt-1"
                 defaultValue=""
-                {...register('email', { required: true })}
+                {...register("email", { required: true })}
               />
-              {errors.email?.type === 'required' && (
+              {errors.email?.type === "required" && (
                 <HelperText valid={false}>Email is required</HelperText>
               )}
             </Label>
@@ -163,9 +173,9 @@ function CreateOrganizations() {
                 className="mt-1"
                 type="number"
                 defaultValue=""
-                {...register('total_participant', { required: true })}
+                {...register("total_participant", { required: true })}
               />
-              {errors.total_participant?.type === 'required' && (
+              {errors.total_participant?.type === "required" && (
                 <HelperText valid={false}>
                   Total Participant is required
                 </HelperText>
@@ -179,7 +189,7 @@ function CreateOrganizations() {
               </Button>
             </div>
             <div>
-              {createOrganizationStatus === 'loading' ? (
+              {createOrganizationStatus === "loading" ? (
                 <>
                   <FulfillingBouncingCircleSpinner size="20" />
                 </>
@@ -193,7 +203,7 @@ function CreateOrganizations() {
         </form>
       </div>
     </>
-  )
+  );
 }
 
-export default CreateOrganizations
+export default CreateOrganizations;
